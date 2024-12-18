@@ -1,9 +1,9 @@
 import React, { useState, useEffect, memo } from "react";
 import { View, Text } from "react-native";
-import { Agenda, AgendaEntry } from "react-native-calendars";
-import { CANVAS_KEY } from "@/api/constants";
+import { Agenda } from "react-native-calendars";
 import { Assignment } from "@/api/interfaces";
 import { courseFormat } from "@/api/constants";
+import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 
 interface Items {
   [date: string]: Assignment[];
@@ -19,84 +19,58 @@ const HomeScreen: React.FC = () => {
     agendaKnobColor: "blue",
   };
 
-  const accessToken = CANVAS_KEY;
-  // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
-  const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/users/self/courses';
-  // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
-  const assignmentsUrl =
-    "https://utchattanooga.instructure.com/api/v1/users/self/courses/36686/assignments";
-
-  const fetchCourses = async () => {
-    try {
-      const response = await fetch(canvasUrl, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data: any = await response.json();
-      console.log("");
-      console.log("");
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].name && data[i].course_code && courseFormat(data[i].name)) {
-          console.log(data[i].name);
-          console.log(data[i].course_code);
-        }
-      }
-    } catch (error: any) {
-      console.error("Errors:", error.message);
-    };
-  };
-
-  const fetchAssignments = async () => {
-    try {
-      const response = await fetch(assignmentsUrl, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Error fetching assignments");
-      }
-
-      const data: Assignment[] = await response.json();
-      const newItems: Items = {};
-
-      data.forEach((assignment: Assignment) => {
-        const dueDate = new Date(assignment.due_at);
-        const formattedDate = dueDate.toISOString().split("T")[0];
-        // console.log(assignment);
-
-        if (!newItems[formattedDate]) {
-          newItems[formattedDate] = [];
-        }
-
-        newItems[formattedDate].push({
-          course_id: assignment.course_id,
-          id: assignment.id,
-          name: assignment.name,
-          time: dueDate.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          due_at: assignment.due_at,
-        });
-      });
-
-      setItems(newItems);
-    } catch (error: any) {
-      console.error("Error:", error.message);
-    }
-  };
-
   useEffect(() => {
-    fetchCourses();
-    fetchAssignments();
+    const loadData = async () => {
+      try {
+        const coursesData = await fetchCourses();
+        const assignmentsData = await fetchAssignments();
+        const newItems: Items = {};
+
+        console.log("~~~~~~~~~~~~~~~~~ Courses ~~~~~~~~~~~~~~~~~");
+        for (let i = 0; i < coursesData.length; i++) {
+          if (
+            coursesData[i].name &&
+            coursesData[i].course_code &&
+            courseFormat(coursesData[i].name)
+          ) {
+            console.log(coursesData[i].name);
+            console.log(coursesData[i].course_code);
+          }
+        }
+        console.log("~~~~~~~~~~~~~~~ Assignments ~~~~~~~~~~~~~~~");
+        for (let i = 0; i < assignmentsData.length; i++) {
+          if (assignmentsData[i].name) {
+            console.log(assignmentsData[i].name);
+          }
+        }
+
+        assignmentsData.forEach((assignment: Assignment) => {
+          const dueDate = new Date(assignment.due_at);
+          const formattedDate = dueDate.toISOString().split("T")[0];
+
+          if (!newItems[formattedDate]) {
+            newItems[formattedDate] = [];
+          }
+
+          newItems[formattedDate].push({
+            course_id: assignment.course_id,
+            id: assignment.id,
+            name: assignment.name,
+            time: dueDate.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            due_at: assignment.due_at,
+          });
+        });
+
+        setItems(newItems);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    loadData();
   }, []);
 
   const RenderItem: React.FC<{ item: Assignment }> = memo(({ item }) => (
