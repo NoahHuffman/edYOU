@@ -2,15 +2,15 @@ import { CANVAS_KEY, USER_ID, CPSC_4910_ID } from "@/api/constants";
 import { Assignment } from "@/api/interfaces";
 
 const accessToken = CANVAS_KEY;
-// const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
+const coursesUrl = `https://utchattanooga.instructure.com/api/v1/planner/items?start_date=2024-12-04T05%3A00%3A00.000Z&order=asc`;
 const canvasUrl =
-  `https://utchattanooga.instructure.com/api/v1/users/${USER_ID}/courses`;
+  `https://utchattanooga.instructure.com/api/v1/users/${USER_ID}/planner/items`;
 const assignmentsUrl =
-  `https://utchattanooga.instructure.com/api/v1/users/${USER_ID}/courses/${CPSC_4910_ID}/assignments`;
+  `https://utchattanooga.instructure.com/api/v1/users/${USER_ID}/courses/36686/assignments`;
 
 export const fetchCourses = async () => {
   try {
-    const response = await fetch(canvasUrl, {
+    const response = await fetch(coursesUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,

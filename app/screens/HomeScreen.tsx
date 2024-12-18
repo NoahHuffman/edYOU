@@ -19,6 +19,8 @@ const HomeScreen: React.FC = () => {
     agendaKnobColor: "blue",
   };
 
+  const courseIds: string[] = [];
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -28,15 +30,14 @@ const HomeScreen: React.FC = () => {
 
         console.log("~~~~~~~~~~~~~~~~~ Courses ~~~~~~~~~~~~~~~~~");
         for (let i = 0; i < coursesData.length; i++) {
-          if (
-            coursesData[i].name &&
-            coursesData[i].course_code &&
-            courseFormat(coursesData[i].name)
-          ) {
-            console.log(coursesData[i].name);
-            console.log(coursesData[i].course_code);
+          const courseId = coursesData[i].course_id;
+          if (courseId && courseId.toString().length == 5 && !courseIds.includes(courseId)) {
+            courseIds.push(courseId);
           }
         }
+        
+        console.log(courseIds);
+
         console.log("~~~~~~~~~~~~~~~ Assignments ~~~~~~~~~~~~~~~");
         for (let i = 0; i < assignmentsData.length; i++) {
           if (assignmentsData[i].name) {
