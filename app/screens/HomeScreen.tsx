@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { Agenda, AgendaEntry } from "react-native-calendars";
 import { CANVAS_KEY } from "@/api/constants";
 import { Assignment } from "@/api/interfaces";
+import { courseFormat } from "@/api/constants";
 
 interface Items {
   [date: string]: Assignment[];
@@ -20,10 +21,34 @@ const HomeScreen: React.FC = () => {
 
   const accessToken = CANVAS_KEY;
   // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
-  // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=first&per_page=10';
+  const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/users/self/courses';
   // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
   const assignmentsUrl =
-    "https://utchattanooga.instructure.com/api/v1/courses/36686/assignments";
+    "https://utchattanooga.instructure.com/api/v1/users/self/courses/36686/assignments";
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch(canvasUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data: any = await response.json();
+      console.log("");
+      console.log("");
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].name && data[i].course_code && courseFormat(data[i].name)) {
+          console.log(data[i].name);
+          console.log(data[i].course_code);
+        }
+      }
+    } catch (error: any) {
+      console.error("Errors:", error.message);
+    };
+  };
 
   const fetchAssignments = async () => {
     try {
@@ -42,34 +67,35 @@ const HomeScreen: React.FC = () => {
       const data: Assignment[] = await response.json();
       const newItems: Items = {};
 
-      data.forEach((course: Assignment) => {
-        const dueDate = new Date(course.due_at);
+      data.forEach((assignment: Assignment) => {
+        const dueDate = new Date(assignment.due_at);
         const formattedDate = dueDate.toISOString().split("T")[0];
-        console.log(course);
+        // console.log(assignment);
 
         if (!newItems[formattedDate]) {
           newItems[formattedDate] = [];
         }
 
         newItems[formattedDate].push({
-          course_id: course.course_id,
-          id: course.id,
-          name: course.name,
+          course_id: assignment.course_id,
+          id: assignment.id,
+          name: assignment.name,
           time: dueDate.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          due_at: course.due_at,
+          due_at: assignment.due_at,
         });
       });
 
       setItems(newItems);
     } catch (error: any) {
-      console.error("Error fetching courses:", error.message);
+      console.error("Error:", error.message);
     }
   };
 
   useEffect(() => {
+    fetchCourses();
     fetchAssignments();
   }, []);
 
