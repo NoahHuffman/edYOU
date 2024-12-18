@@ -4,12 +4,14 @@ import { Agenda, AgendaEntry } from "react-native-calendars";
 import { CANVAS_KEY } from "@/api/constants";
 
 interface Assignment {
+  course_id: number;
   id: number;
   name: string;
   time: string;
 }
 
 interface Course {
+  course_id: number;
   id: number;
   name: string;
   due_at: string;
@@ -56,12 +58,14 @@ const HomeScreen: React.FC = () => {
       data.forEach((course: Course) => {
         const dueDate = new Date(course.due_at);
         const formattedDate = dueDate.toISOString().split("T")[0];
+        console.log(course);
 
         if (!newItems[formattedDate]) {
           newItems[formattedDate] = [];
         }
 
         newItems[formattedDate].push({
+          course_id: course.course_id,
           id: course.id,
           name: course.name,
           time: dueDate.toLocaleTimeString([], {
@@ -91,6 +95,7 @@ const HomeScreen: React.FC = () => {
         padding: 10,
       }}
     >
+      <Text style={{ fontWeight: "bold" }}>Course ID: {item.course_id}</Text>
       <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
       <Text>{item.time}</Text>
     </View>
