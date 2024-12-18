@@ -2,20 +2,7 @@ import React, { useState, useEffect, memo } from "react";
 import { View, Text } from "react-native";
 import { Agenda, AgendaEntry } from "react-native-calendars";
 import { CANVAS_KEY } from "@/api/constants";
-
-interface Assignment {
-  course_id: number;
-  id: number;
-  name: string;
-  time: string;
-}
-
-interface Course {
-  course_id: number;
-  id: number;
-  name: string;
-  due_at: string;
-}
+import { Assignment } from "@/api/interfaces";
 
 interface Items {
   [date: string]: Assignment[];
@@ -35,12 +22,12 @@ const HomeScreen: React.FC = () => {
   // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
   // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=first&per_page=10';
   // const canvasUrl = 'https://utchattanooga.instructure.com/api/v1/planner/items?order=asc&start_date=2024-12-04T05%3A00%3A00.000Z&page=bookmark:WyJ2aWV3aW5nIixbIjIwMjQtMTItMDkgMDQ6NTk6NTkuMDAwMDAwIiw4NjY3NjFdXQ&per_page=10';
-  const canvasUrl =
+  const assignmentsUrl =
     "https://utchattanooga.instructure.com/api/v1/courses/36686/assignments";
 
-  const fetchCourses = async () => {
+  const fetchAssignments = async () => {
     try {
-      const response = await fetch(canvasUrl, {
+      const response = await fetch(assignmentsUrl, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -52,10 +39,10 @@ const HomeScreen: React.FC = () => {
         throw new Error("Error fetching assignments");
       }
 
-      const data: Course[] = await response.json();
+      const data: Assignment[] = await response.json();
       const newItems: Items = {};
 
-      data.forEach((course: Course) => {
+      data.forEach((course: Assignment) => {
         const dueDate = new Date(course.due_at);
         const formattedDate = dueDate.toISOString().split("T")[0];
         console.log(course);
@@ -72,6 +59,7 @@ const HomeScreen: React.FC = () => {
             hour: "2-digit",
             minute: "2-digit",
           }),
+          due_at: course.due_at,
         });
       });
 
@@ -82,7 +70,7 @@ const HomeScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchAssignments();
   }, []);
 
   const RenderItem: React.FC<{ item: Assignment }> = memo(({ item }) => (
