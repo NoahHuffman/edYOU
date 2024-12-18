@@ -67,7 +67,7 @@ const HomeScreen: React.FC = () => {
           time: dueDate.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
-          }), // Format time
+          }),
         });
       });
 
@@ -96,6 +96,21 @@ const HomeScreen: React.FC = () => {
     </View>
   ));
 
+  const RenderEmptyData: React.FC = () => (
+    <View
+      style={{
+        marginVertical: 10,
+        marginTop: 30,
+        backgroundColor: "white",
+        marginHorizontal: 10,
+        padding: 10,
+        alignItems: "center",
+      }}
+    >
+      <Text>No assignments due today!</Text>
+    </View>
+  );
+
   return (
     <View style={{ flex: 1, marginHorizontal: 10 }}>
       <Agenda
@@ -103,6 +118,7 @@ const HomeScreen: React.FC = () => {
         showOnlySelectedDayItems={true}
         theme={customTheme}
         renderItem={(item: Assignment) => <RenderItem item={item} />}
+        renderEmptyData={() => <RenderEmptyData />}
       />
     </View>
   );
