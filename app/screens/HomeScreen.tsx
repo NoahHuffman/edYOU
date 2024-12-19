@@ -20,9 +20,12 @@ const HomeScreen: React.FC = () => {
   const [dueTime, setDueTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [classNameInput, onChangeClassName] = React.useState("");
+  const [assignmentNameInput, onChangeAssignmentName] = React.useState("");
   const courseColorMap = useRef<{ [key: string]: string }>({});
   const assignedColors = new Set<string>();
   const currentDate = new Date();
+  const newItems: Items = {};
 
   const customTheme = {
     agendaDayTextColor: "yellow",
@@ -92,11 +95,36 @@ const HomeScreen: React.FC = () => {
     setDueTime(currentTime);
   };
 
+  const addNewAssignment = (
+    courseName: string,
+    assignmentName: string,
+    dueDate: Date
+  ) => {
+    setModalVisible(false);
+    const formattedDate = dueDate.toISOString().split("T")[0];
+    const updatedItems = { ...items };
+
+    if (!updatedItems[formattedDate]) {
+      updatedItems[formattedDate] = [];
+    }
+
+    updatedItems[formattedDate].push({
+      course_id: courseName,
+      name: assignmentName,
+      time: dueDate.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      due_at: dueDate.toString(),
+    });
+
+    setItems(updatedItems);
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const coursesData = await fetchCourses();
-        const newItems: Items = {};
 
         for (let i = 0; i < coursesData.length; i++) {
           const courseId = coursesData[i].course_id;
@@ -234,14 +262,14 @@ const HomeScreen: React.FC = () => {
           <TextInput
             style={styles.input}
             placeholder="Class name"
-            // onChangeText={onChangeClassName}
-            // value={className}
+            onChangeText={onChangeClassName}
+            value={classNameInput}
           />
           <TextInput
             style={styles.input}
             placeholder="Name of assignment"
-            // onChangeText={onChangeAssignmentName}
-            // value={assignmentName}
+            onChangeText={onChangeAssignmentName}
+            value={assignmentNameInput}
           />
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
             <TextInput
@@ -264,7 +292,9 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.closeButton}
-            onPress={() => setModalVisible(false)}
+            onPress={() =>
+              addNewAssignment(classNameInput, assignmentNameInput, dueTime)
+            }
           >
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
