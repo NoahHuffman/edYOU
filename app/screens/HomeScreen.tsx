@@ -1,5 +1,12 @@
 import React, { useState, useEffect, memo, useRef } from "react";
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
 import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
@@ -7,6 +14,7 @@ import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
+  const [modalVisible, setModalVisible] = useState(false);
   const courseColorMap = useRef<{ [key: string]: string }>({});
   const assignedColors = new Set<string>();
   const currentDate = new Date();
@@ -15,24 +23,43 @@ const HomeScreen: React.FC = () => {
     agendaDayTextColor: "yellow",
     agendaDayNumColor: "green",
     agendaTodayColor: "red",
-    agendaKnobColor: "blue"
+    agendaKnobColor: "blue",
   };
 
   const courses: { [key: string]: number } = {};
   let courseAssignments: CourseAssignment = {};
 
   const colorList = [
-    "#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#E67E22",
-    "#E74C3C", "#8E44AD", "#3498DB", "#2ECC71", "#1ABC9C",
-    "#9B59B6", "#34495E", "#16A085", "#27AE60", "#2980B9",
-    "#8E44AD", "#F39C12", "#D35400", "#C0392B", "#7F8C8D"
+    "#FF5733",
+    "#33FF57",
+    "#3357FF",
+    "#F1C40F",
+    "#E67E22",
+    "#E74C3C",
+    "#8E44AD",
+    "#3498DB",
+    "#2ECC71",
+    "#1ABC9C",
+    "#9B59B6",
+    "#34495E",
+    "#16A085",
+    "#27AE60",
+    "#2980B9",
+    "#8E44AD",
+    "#F39C12",
+    "#D35400",
+    "#C0392B",
+    "#7F8C8D",
   ];
 
   const getColorForCourseId = (courseId: string): string => {
-    const hash = Array.from(courseId).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hash = Array.from(courseId).reduce(
+      (acc, char) => acc + char.charCodeAt(0),
+      0
+    );
     const index = hash % colorList.length;
     const color = colorList[index];
-  
+
     if (assignedColors.has(color)) {
       for (let i = 0; i < colorList.length; i++) {
         const nextColor = colorList[(index + i) % colorList.length];
@@ -45,7 +72,7 @@ const HomeScreen: React.FC = () => {
       assignedColors.add(color);
       return color;
     }
-    return 'white';
+    return "white";
   };
 
   useEffect(() => {
@@ -66,7 +93,8 @@ const HomeScreen: React.FC = () => {
             const courseName = getClassName(coursesData[i].context_name);
             courses[courseName] = courseId;
 
-            courseColorMap.current[courseName] = getColorForCourseId(courseName);
+            courseColorMap.current[courseName] =
+              getColorForCourseId(courseName);
           }
         }
 
@@ -133,25 +161,26 @@ const HomeScreen: React.FC = () => {
     loadData();
   }, []);
 
-  const RenderItem: React.FC<{ item: Assignment & { className: string } }> = memo(({ item }) => {
-    const backgroundColor = courseColorMap.current[item.course_id] || "white";
+  const RenderItem: React.FC<{ item: Assignment & { className: string } }> =
+    memo(({ item }) => {
+      const backgroundColor = courseColorMap.current[item.course_id] || "white";
 
-    return (
-      <View
-        style={{
-          marginVertical: 10,
-          marginTop: 30,
-          backgroundColor: backgroundColor,
-          marginHorizontal: 10,
-          padding: 10,
-        }}
-      >
-        <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
-        <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-        <Text>{item.time}</Text>
-      </View>
-    );
-  });
+      return (
+        <View
+          style={{
+            marginVertical: 10,
+            marginTop: 30,
+            backgroundColor: backgroundColor,
+            marginHorizontal: 10,
+            padding: 10,
+          }}
+        >
+          <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
+          <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+          <Text>{item.time}</Text>
+        </View>
+      );
+    });
 
   const RenderEmptyData: React.FC = () => (
     <View
@@ -170,6 +199,48 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1, marginHorizontal: 10 }}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Create an assignment</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Class name"
+            // onChangeText={onChangeClassName}
+            // value={className}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Name of assignment"
+            // onChangeText={onChangeAssignmentName}
+            // value={assignmentName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Due date"
+            // onChangeText={onChangeAssignmentDueDate}
+            // value={assignmentDueDate}
+          />
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       <Agenda
         items={items}
         showOnlySelectedDayItems={true}
@@ -182,5 +253,67 @@ const HomeScreen: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  addButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "blue",
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    zIndex: 1,
+  },
+  addButtonText: {
+    color: "white",
+    fontSize: 24,
+  },
+  modalView: {
+    flex: 1,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 20,
+    color: "black",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  closeButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: "white",
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
 
 export default HomeScreen;
