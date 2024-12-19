@@ -7,6 +7,7 @@ import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
+  const currentDate = new Date();
 
   const customTheme = {
     agendaDayTextColor: "yellow",
@@ -46,6 +47,12 @@ const HomeScreen: React.FC = () => {
             for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
               const courseName = assignmentsData[i].courseName;
               const assignment: Assignment = assignmentsData[i].assignments[j];
+
+              if (!assignment.name) assignment.name = "Unnamed Assignment";
+              if (!assignment.due_at) {
+                assignment.due_at = currentDate.toISOString();
+                assignment.name += " (No due date)";
+              }
 
               const assignmentEntry = {
                 name: assignment.name,
