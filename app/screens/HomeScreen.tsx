@@ -11,10 +11,15 @@ import { Agenda } from "react-native-calendars";
 import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
 import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [dueDate, setDueDate] = useState(new Date());
+  const [dueTime, setDueTime] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const courseColorMap = useRef<{ [key: string]: string }>({});
   const assignedColors = new Set<string>();
   const currentDate = new Date();
@@ -73,6 +78,18 @@ const HomeScreen: React.FC = () => {
       return color;
     }
     return "white";
+  };
+
+  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
+    const currentDate = selectedDate || dueDate;
+    setShowDatePicker(false);
+    setDueDate(currentDate);
+  };
+
+  const handleTimeChange = (event: any, selectedTime: Date | undefined) => {
+    const currentTime = selectedTime || dueTime;
+    setShowTimePicker(false);
+    setDueTime(currentTime);
   };
 
   useEffect(() => {
@@ -226,12 +243,25 @@ const HomeScreen: React.FC = () => {
             // onChangeText={onChangeAssignmentName}
             // value={assignmentName}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Due date"
-            // onChangeText={onChangeAssignmentDueDate}
-            // value={assignmentDueDate}
-          />
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <TextInput
+              style={styles.input}
+              placeholder="Due date"
+              value={dueDate.toLocaleDateString()}
+              editable={false}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+            <TextInput
+              style={styles.input}
+              placeholder="Time"
+              value={dueTime.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+              editable={false}
+            />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setModalVisible(false)}
@@ -240,6 +270,23 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={dueDate}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+      {showTimePicker && (
+        <DateTimePicker
+          value={dueTime}
+          mode="time"
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
 
       <Agenda
         items={items}
@@ -282,10 +329,10 @@ const styles = StyleSheet.create({
   modalView: {
     flex: 1,
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
