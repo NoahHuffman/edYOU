@@ -2,13 +2,11 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './screens/HomeScreen';
-import ListsScreen from './screens/ListsScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Login from './components/Login';
 
 const homeName = "Home";
-const searchName = "Search";
-const listsName = "Lists";
+const loginName = "Login";
 const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
@@ -24,7 +22,7 @@ function MainContainer() {
 
           if (rn === homeName) {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (rn === listsName) {
+          } else if (rn === loginName) {
             iconName = focused ? 'list' : 'list-outline';
           } else {
             iconName = focused ? 'settings' : 'settings-outline';
@@ -40,8 +38,8 @@ function MainContainer() {
       })}>
       
       <Tab.Screen name={homeName} component={HomeScreen} />
-      <Tab.Screen name={listsName} component={Login} />
-      {/* <Tab.Screen name={settingsName} component={SettingsScreen} /> */}
+      <Tab.Screen name={loginName} component={Login} />
+      <Tab.Screen name={settingsName} component={SettingsScreen} />
 
     </Tab.Navigator>
   );
