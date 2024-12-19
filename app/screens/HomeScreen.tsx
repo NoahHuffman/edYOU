@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useRef } from "react";
 import { View, Text } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
@@ -7,6 +7,8 @@ import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
+  const courseColorMap = useRef<{ [key: string]: string }>({});
+  const assignedColors = new Set<string>();
   const currentDate = new Date();
 
   const customTheme = {
@@ -19,10 +21,31 @@ const HomeScreen: React.FC = () => {
   const courses: { [key: string]: number } = {};
   let courseAssignments: CourseAssignment = {};
 
-  const courseColorMap: { [key: string]: string } = {
-    "CPSC 4910": "#90EE90",
-    "CPSC 4100": "#ADD8E6",
-    "CPSC 4180": "#E6E6FA",
+  const colorList = [
+    "#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#E67E22",
+    "#E74C3C", "#8E44AD", "#3498DB", "#2ECC71", "#1ABC9C",
+    "#9B59B6", "#34495E", "#16A085", "#27AE60", "#2980B9",
+    "#8E44AD", "#F39C12", "#D35400", "#C0392B", "#7F8C8D"
+  ];
+
+  const getColorForCourseId = (courseId: string): string => {
+    const hash = Array.from(courseId).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = hash % colorList.length;
+    const color = colorList[index];
+  
+    if (assignedColors.has(color)) {
+      for (let i = 0; i < colorList.length; i++) {
+        const nextColor = colorList[(index + i) % colorList.length];
+        if (!assignedColors.has(nextColor)) {
+          assignedColors.add(nextColor);
+          return nextColor;
+        }
+      }
+    } else {
+      assignedColors.add(color);
+      return color;
+    }
+    return 'white';
   };
 
   useEffect(() => {
@@ -42,6 +65,8 @@ const HomeScreen: React.FC = () => {
           ) {
             const courseName = getClassName(coursesData[i].context_name);
             courses[courseName] = courseId;
+
+            courseColorMap.current[courseName] = getColorForCourseId(courseName);
           }
         }
 
@@ -109,8 +134,8 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   const RenderItem: React.FC<{ item: Assignment & { className: string } }> = memo(({ item }) => {
-    const backgroundColor = courseColorMap[item.course_id] || "white";
-  
+    const backgroundColor = courseColorMap.current[item.course_id] || "white";
+
     return (
       <View
         style={{
