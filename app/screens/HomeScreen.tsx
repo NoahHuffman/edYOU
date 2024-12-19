@@ -1,13 +1,9 @@
 import React, { useState, useEffect, memo } from "react";
 import { View, Text } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { Assignment } from "@/api/interfaces";
+import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
 import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
-
-interface Items {
-  [date: string]: Assignment[];
-}
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
@@ -20,6 +16,7 @@ const HomeScreen: React.FC = () => {
   };
 
   const courses: { [key: string]: number } = {};
+  let courseAssignments: CourseAssignment = {};
 
   useEffect(() => {
     const loadData = async () => {
@@ -27,17 +24,19 @@ const HomeScreen: React.FC = () => {
         const coursesData = await fetchCourses();
         const newItems: Items = {};
 
-        console.log("~~~~~~~~~~~~~~~~~ Courses ~~~~~~~~~~~~~~~~~");
         for (let i = 0; i < coursesData.length; i++) {
           const courseId = coursesData[i].course_id;
           const fullCourseName = coursesData[i].context_name;
-          if (courseId && fullCourseName && courseId.toString().length == UTC_COURSE_CODE_LENGTH && !Object.values(courses).includes(courseId)) {
+          if (
+            courseId &&
+            fullCourseName &&
+            courseId.toString().length == UTC_COURSE_CODE_LENGTH &&
+            !Object.values(courses).includes(courseId)
+          ) {
             const courseName = getClassName(coursesData[i].context_name);
             courses[courseName] = courseId;
           }
         }
-        
-        console.log(courses);
 
         const assignmentsData = await fetchAssignments(courses);
 
@@ -45,30 +44,47 @@ const HomeScreen: React.FC = () => {
         for (let i = 0; i < assignmentsData.length; i++) {
           if (assignmentsData[i].assignments.length > 0) {
             for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
-              console.log(assignmentsData[i].courseName + ': ' + assignmentsData[i].assignments[j].name);
+              const courseName = assignmentsData[i].courseName;
+              const assignment: Assignment = assignmentsData[i].assignments[j];
+
+              const assignmentEntry = {
+                name: assignment.name,
+                dueDate: assignment.due_at,
+              };
+
+              if (!courseAssignments[courseName]) {
+                courseAssignments[courseName] = [];
+              }
+              courseAssignments[courseName].push(assignmentEntry);
             }
           }
         }
 
-        assignmentsData.forEach((assignment: any) => {
-          const dueDate = new Date(assignment.due_at);
-          const formattedDate = dueDate.toISOString().split("T")[0];
+        for (const courseName in courseAssignments) {
+          const assignments = courseAssignments[courseName];
 
-          if (!newItems[formattedDate]) {
-            newItems[formattedDate] = [];
-          }
+          assignments.forEach((assignment) => {
+            const dueDate = new Date(assignment.dueDate);
+            const formattedDate = dueDate.toISOString().split("T")[0];
 
-          newItems[formattedDate].push({
-            course_id: assignment.course_id,
-            id: assignment.id,
-            name: assignment.name,
-            time: dueDate.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            due_at: assignment.due_at,
+            if (!newItems[formattedDate]) {
+              newItems[formattedDate] = [];
+            }
+
+            newItems[formattedDate].push({
+              course_id: courseName,
+              name: assignment.name,
+              time: dueDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              due_at: assignment.dueDate,
+            });
           });
-        });
+        }
+
+        console.log(courseAssignments);
+        console.log(newItems);
 
         setItems(newItems);
       } catch (error) {
@@ -89,7 +105,7 @@ const HomeScreen: React.FC = () => {
         padding: 10,
       }}
     >
-      <Text style={{ fontWeight: "bold" }}>Course ID: {item.course_id}</Text>
+      <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
       <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
       <Text>{item.time}</Text>
     </View>
@@ -116,7 +132,9 @@ const HomeScreen: React.FC = () => {
         items={items}
         showOnlySelectedDayItems={true}
         theme={customTheme}
-        renderItem={(item: Assignment) => <RenderItem item={item} />}
+        renderItem={(item: Assignment & { className: string }) => (
+          <RenderItem item={item} />
+        )}
         renderEmptyData={() => <RenderEmptyData />}
       />
     </View>
