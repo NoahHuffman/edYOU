@@ -25,7 +25,6 @@ const HomeScreen: React.FC = () => {
     const loadData = async () => {
       try {
         const coursesData = await fetchCourses();
-        const assignmentsData = await fetchAssignments();
         const newItems: Items = {};
 
         console.log("~~~~~~~~~~~~~~~~~ Courses ~~~~~~~~~~~~~~~~~");
@@ -40,14 +39,18 @@ const HomeScreen: React.FC = () => {
         
         console.log(courses);
 
+        const assignmentsData = await fetchAssignments(courses);
+
         console.log("~~~~~~~~~~~~~~~ Assignments ~~~~~~~~~~~~~~~");
         for (let i = 0; i < assignmentsData.length; i++) {
-          if (assignmentsData[i].name) {
-            console.log(assignmentsData[i].name);
+          if (assignmentsData[i].assignments.length > 0) {
+            for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
+              console.log(assignmentsData[i].courseName + ': ' + assignmentsData[i].assignments[j].name);
+            }
           }
         }
 
-        assignmentsData.forEach((assignment: Assignment) => {
+        assignmentsData.forEach((assignment: any) => {
           const dueDate = new Date(assignment.due_at);
           const formattedDate = dueDate.toISOString().split("T")[0];
 
