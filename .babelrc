@@ -1,0 +1,11 @@
+{
+    "presets": ["react-native"],
+    "plugins": [
+    ["transform-inline-environment-variables", {
+      "include": [
+        "UTC_ID",
+        "UTC_PASSWORD"
+      ]
+    }]
+  ]
+  }
