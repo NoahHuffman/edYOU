@@ -13,11 +13,17 @@ const HomeScreen: React.FC = () => {
     agendaDayTextColor: "yellow",
     agendaDayNumColor: "green",
     agendaTodayColor: "red",
-    agendaKnobColor: "blue",
+    agendaKnobColor: "blue"
   };
 
   const courses: { [key: string]: number } = {};
   let courseAssignments: CourseAssignment = {};
+
+  const courseColorMap: { [key: string]: string } = {
+    "CPSC 4910": "#90EE90",
+    "CPSC 4100": "#ADD8E6",
+    "CPSC 4180": "#E6E6FA",
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -102,21 +108,25 @@ const HomeScreen: React.FC = () => {
     loadData();
   }, []);
 
-  const RenderItem: React.FC<{ item: Assignment }> = memo(({ item }) => (
-    <View
-      style={{
-        marginVertical: 10,
-        marginTop: 30,
-        backgroundColor: "white",
-        marginHorizontal: 10,
-        padding: 10,
-      }}
-    >
-      <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
-      <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-      <Text>{item.time}</Text>
-    </View>
-  ));
+  const RenderItem: React.FC<{ item: Assignment & { className: string } }> = memo(({ item }) => {
+    const backgroundColor = courseColorMap[item.course_id] || "white";
+  
+    return (
+      <View
+        style={{
+          marginVertical: 10,
+          marginTop: 30,
+          backgroundColor: backgroundColor,
+          marginHorizontal: 10,
+          padding: 10,
+        }}
+      >
+        <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
+        <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+        <Text>{item.time}</Text>
+      </View>
+    );
+  });
 
   const RenderEmptyData: React.FC = () => (
     <View
