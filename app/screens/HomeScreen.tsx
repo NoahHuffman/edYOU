@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from "react";
 import { View, Text } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment } from "@/api/interfaces";
-import { courseFormat } from "@/api/constants";
+import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 
 interface Items {
@@ -19,7 +19,7 @@ const HomeScreen: React.FC = () => {
     agendaKnobColor: "blue",
   };
 
-  const courseIds: string[] = [];
+  const courses: { [key: string]: number } = {};
 
   useEffect(() => {
     const loadData = async () => {
@@ -31,12 +31,14 @@ const HomeScreen: React.FC = () => {
         console.log("~~~~~~~~~~~~~~~~~ Courses ~~~~~~~~~~~~~~~~~");
         for (let i = 0; i < coursesData.length; i++) {
           const courseId = coursesData[i].course_id;
-          if (courseId && courseId.toString().length == 5 && !courseIds.includes(courseId)) {
-            courseIds.push(courseId);
+          const fullCourseName = coursesData[i].context_name;
+          if (courseId && fullCourseName && courseId.toString().length == UTC_COURSE_CODE_LENGTH && !Object.values(courses).includes(courseId)) {
+            const courseName = getClassName(coursesData[i].context_name);
+            courses[courseName] = courseId;
           }
         }
         
-        console.log(courseIds);
+        console.log(courses);
 
         console.log("~~~~~~~~~~~~~~~ Assignments ~~~~~~~~~~~~~~~");
         for (let i = 0; i < assignmentsData.length; i++) {
