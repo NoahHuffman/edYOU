@@ -30,10 +30,10 @@ const HomeScreen: React.FC = () => {
   const newItems: Items = {};
 
   const customTheme = {
-    agendaDayTextColor: "yellow",
-    agendaDayNumColor: "green",
-    agendaTodayColor: "red",
-    agendaKnobColor: "blue",
+    agendaDayTextColor: "#B0B0B0",
+    agendaDayNumColor: "#B0B0B0",
+    agendaTodayColor: "#B0B0B0",
+    agendaKnobColor: "#B0B0B0",
   };
 
   const courses: { [key: string]: number } = {};
