@@ -226,11 +226,11 @@ const HomeScreen: React.FC = () => {
       return (
         <View
           style={{
-            marginVertical: 10,
-            marginTop: 30,
+            marginVertical: 6,
             backgroundColor: backgroundColor,
             marginHorizontal: 10,
             padding: 10,
+            borderRadius: 8,
           }}
         >
           <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
@@ -241,16 +241,7 @@ const HomeScreen: React.FC = () => {
     });
 
   const RenderEmptyData: React.FC = () => (
-    <View
-      style={{
-        marginVertical: 10,
-        marginTop: 30,
-        backgroundColor: "white",
-        marginHorizontal: 10,
-        padding: 10,
-        alignItems: "center",
-      }}
-    >
+    <View style={styles.emptyAgenda}>
       <Text>No assignments due today!</Text>
     </View>
   );
@@ -450,6 +441,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     zIndex: 2,
+  },
+  emptyAgenda: {
+    marginVertical: 10,
+    marginTop: 30,
+    backgroundColor: "white",
+    marginHorizontal: 10,
+    padding: 10,
+    alignItems: "center",
   },
 });
 
