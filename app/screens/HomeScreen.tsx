@@ -40,26 +40,16 @@ const HomeScreen: React.FC = () => {
   let courseAssignments: CourseAssignment = {};
 
   const colorList = [
-    "#FF5733",
-    "#33FF57",
-    "#3357FF",
-    "#F1C40F",
-    "#E67E22",
-    "#E74C3C",
-    "#8E44AD",
-    "#3498DB",
-    "#2ECC71",
-    "#1ABC9C",
-    "#9B59B6",
-    "#34495E",
-    "#16A085",
-    "#27AE60",
-    "#2980B9",
-    "#8E44AD",
-    "#F39C12",
-    "#D35400",
-    "#C0392B",
-    "#7F8C8D",
+    "#F8D3B0",
+    "#E1C6E7",
+    "#B2E0D9",
+    "#A4C8E1",
+    "#F4B6A0",
+    "#F9EBAE",
+    "#F2C6D4",
+    "#C8E1D4",
+    "#A3D1E5",
+    "#EDE1C2",
   ];
 
   const getColorForCourseId = (courseId: string): string => {
