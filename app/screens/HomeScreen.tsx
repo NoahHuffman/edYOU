@@ -257,6 +257,12 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1, marginHorizontal: 10 }}>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="blue" />
+        </View>
+      )}
+
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => setModalVisible(true)}
@@ -337,6 +343,7 @@ const HomeScreen: React.FC = () => {
           onChange={handleDateChange}
         />
       )}
+
       {showTimePicker && (
         <DateTimePicker
           value={dueTime}
@@ -432,6 +439,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    zIndex: 2,
   },
 });
 
