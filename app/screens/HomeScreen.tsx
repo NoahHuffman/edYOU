@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
@@ -22,6 +23,7 @@ const HomeScreen: React.FC = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [classNameInput, onChangeClassName] = React.useState("");
   const [assignmentNameInput, onChangeAssignmentName] = React.useState("");
+  const [loading, setLoading] = useState(true);
   const courseColorMap = useRef<{ [key: string]: string }>({});
   const assignedColors = new Set<string>();
   const currentDate = new Date();
@@ -101,7 +103,7 @@ const HomeScreen: React.FC = () => {
     dueDate: Date
   ) => {
     if (!courseName || !assignmentName) {
-      alert("Please fill out required fields.");
+      alert("Please complete all required fields.");
       return;
     }
 
@@ -132,6 +134,7 @@ const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       try {
         const coursesData = await fetchCourses();
 
@@ -208,6 +211,8 @@ const HomeScreen: React.FC = () => {
         setItems(newItems);
       } catch (error: any) {
         console.error(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -301,7 +306,10 @@ const HomeScreen: React.FC = () => {
             />
           </TouchableOpacity>
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
           >
             <TouchableOpacity
               style={styles.closeButton}
@@ -419,6 +427,11 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
