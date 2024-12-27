@@ -223,9 +223,9 @@ const HomeScreen: React.FC = () => {
             borderRadius: 8,
           }}
         >
-          <Text style={{ fontWeight: "bold" }}>{item.course_id}</Text>
-          <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-          <Text>{item.time}</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 14 }}>{item.name}</Text>
+          <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
+          <Text style={{ fontSize: 12 }}>{item.time}</Text>
         </View>
       );
     });
