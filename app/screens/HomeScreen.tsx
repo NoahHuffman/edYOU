@@ -100,6 +100,11 @@ const HomeScreen: React.FC = () => {
     assignmentName: string,
     dueDate: Date
   ) => {
+    if (!courseName || !assignmentName) {
+      alert("Please fill out required fields.");
+      return;
+    }
+
     setModalVisible(false);
     const formattedDate = dueDate.toISOString().split("T")[0];
     const updatedItems = { ...items };
@@ -119,6 +124,10 @@ const HomeScreen: React.FC = () => {
     });
 
     setItems(updatedItems);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   useEffect(() => {
@@ -145,7 +154,6 @@ const HomeScreen: React.FC = () => {
 
         const assignmentsData = await fetchAssignments(courses);
 
-        console.log("~~~~~~~~~~~~~~~ Assignments ~~~~~~~~~~~~~~~");
         for (let i = 0; i < assignmentsData.length; i++) {
           if (assignmentsData[i].assignments.length > 0) {
             for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
@@ -194,12 +202,12 @@ const HomeScreen: React.FC = () => {
           });
         }
 
-        console.log(courseAssignments);
-        console.log(newItems);
+        // console.log(courseAssignments);
+        // console.log(newItems);
 
         setItems(newItems);
-      } catch (error) {
-        console.error("Error loading data:", error);
+      } catch (error: any) {
+        console.error(error.message);
       }
     };
 
@@ -261,13 +269,15 @@ const HomeScreen: React.FC = () => {
           <Text style={styles.modalText}>Create an assignment</Text>
           <TextInput
             style={styles.input}
-            placeholder="Class name"
+            placeholder="Course name"
+            placeholderTextColor="grey"
             onChangeText={onChangeClassName}
             value={classNameInput}
           />
           <TextInput
             style={styles.input}
-            placeholder="Name of assignment"
+            placeholder="Assignment name"
+            placeholderTextColor="grey"
             onChangeText={onChangeAssignmentName}
             value={assignmentNameInput}
           />
@@ -290,14 +300,24 @@ const HomeScreen: React.FC = () => {
               editable={false}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() =>
-              addNewAssignment(classNameInput, assignmentNameInput, dueTime)
-            }
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => closeModal()}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addAssignmentButton}
+              onPress={() =>
+                addNewAssignment(classNameInput, assignmentNameInput, dueTime)
+              }
+            >
+              <Text style={styles.addAssignmentButtonText}>Add Assignment</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
@@ -374,8 +394,17 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 20,
     color: "black",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  addAssignmentButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+  },
+  addAssignmentButtonText: {
+    color: "white",
   },
   closeButton: {
     backgroundColor: "red",
