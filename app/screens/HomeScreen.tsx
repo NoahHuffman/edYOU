@@ -17,6 +17,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [dueDate, setDueDate] = useState(new Date());
   const [dueTime, setDueTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -122,6 +123,18 @@ const HomeScreen: React.FC = () => {
     setModalVisible(false);
   };
 
+  const toggleAgendaItemExpansion = (itemId: string) => {
+    setExpandedItems((prev) => {
+      const newExpandedItems = new Set(prev);
+      if (newExpandedItems.has(itemId)) {
+        newExpandedItems.delete(itemId);
+      } else {
+        newExpandedItems.add(itemId);
+      }
+      return newExpandedItems;
+    });
+  };
+
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -212,21 +225,31 @@ const HomeScreen: React.FC = () => {
   const RenderItem: React.FC<{ item: Assignment & { className: string } }> =
     memo(({ item }) => {
       const backgroundColor = courseColorMap.current[item.course_id] || "white";
+      const isExpanded = expandedItems.has(item.name);
 
       return (
-        <View
-          style={{
-            marginVertical: 6,
-            backgroundColor: backgroundColor,
-            marginHorizontal: 10,
-            padding: 10,
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 14 }}>{item.name}</Text>
-          <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
-          <Text style={{ fontSize: 12 }}>{item.time}</Text>
-        </View>
+        <TouchableOpacity onPress={() => toggleAgendaItemExpansion(item.name)}>
+          <View
+            style={{
+              marginVertical: 6,
+              backgroundColor: backgroundColor,
+              marginHorizontal: 10,
+              padding: 10,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 14 }}>
+              {item.name}
+            </Text>
+            <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
+            <Text style={{ fontSize: 12 }}>{item.time}</Text>
+            {isExpanded && (
+              <Text style={{ fontSize: 12, marginTop: 5 }}>
+                @TODO: ADD MORE INFO ON ASSIGNMENTS
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
       );
     });
 
