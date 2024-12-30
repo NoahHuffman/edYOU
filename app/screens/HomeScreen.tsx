@@ -224,11 +224,12 @@ const HomeScreen: React.FC = () => {
 
   const RenderItem: React.FC<{ item: Assignment & { className: string } }> =
     memo(({ item }) => {
+      const uniqueId = `${item.course_id}-${item.name}`;
       const backgroundColor = courseColorMap.current[item.course_id] || "white";
-      const isExpanded = expandedItems.has(item.name);
+      const isExpanded = expandedItems.has(uniqueId);
 
       return (
-        <TouchableOpacity onPress={() => toggleAgendaItemExpansion(item.name)}>
+        <TouchableOpacity onPress={() => toggleAgendaItemExpansion(uniqueId)}>
           <View
             style={{
               marginVertical: 6,
