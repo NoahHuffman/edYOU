@@ -123,13 +123,13 @@ const HomeScreen: React.FC = () => {
     setModalVisible(false);
   };
 
-  const toggleAgendaItemExpansion = (itemId: string) => {
+  const toggleAgendaItemExpansion = (uniqueId: string) => {
     setExpandedItems((prev) => {
       const newExpandedItems = new Set(prev);
-      if (newExpandedItems.has(itemId)) {
-        newExpandedItems.delete(itemId);
+      if (newExpandedItems.has(uniqueId)) {
+        newExpandedItems.delete(uniqueId);
       } else {
-        newExpandedItems.add(itemId);
+        newExpandedItems.add(uniqueId);
       }
       return newExpandedItems;
     });
