@@ -223,36 +223,42 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   const RenderItem: React.FC<{ item: Assignment & { className: string } }> =
-    memo(({ item }) => {
-      const uniqueId = `${item.course_id}-${item.name}`;
-      const backgroundColor = courseColorMap.current[item.course_id] || "white";
-      const isExpanded = expandedItems.has(uniqueId);
+  memo(({ item }) => {
+    const uniqueId = `${item.course_id}-${item.name}`;
+    const backgroundColor = courseColorMap.current[item.course_id] || "white";
+    const isExpanded = expandedItems.has(uniqueId);
 
-      return (
-        <TouchableOpacity onPress={() => toggleAgendaItemExpansion(uniqueId)}>
-          <View
-            style={{
-              marginVertical: 6,
-              backgroundColor: backgroundColor,
-              marginHorizontal: 10,
-              padding: 10,
-              borderRadius: 8,
-            }}
-          >
-            <Text style={{ fontWeight: "bold", fontSize: 14 }}>
-              {item.name}
+    const handlePress = () => {
+      console.log("You clicked: " + uniqueId);
+      toggleAgendaItemExpansion(uniqueId);
+    };
+
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <View
+          style={{
+            marginVertical: 6,
+            backgroundColor: backgroundColor,
+            marginHorizontal: 10,
+            padding: 10,
+            borderRadius: 8,
+          }}
+        >
+          <Text style={{ fontWeight: "bold", fontSize: 14 }}>
+            {item.name}
+          </Text>
+          <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
+          <Text style={{ fontSize: 12 }}>{item.time}</Text>
+          {isExpanded && (
+            <Text style={{ fontSize: 12, marginTop: 5 }}>
+              @TODO: ADD MORE INFO ON ASSIGNMENTS
             </Text>
-            <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
-            <Text style={{ fontSize: 12 }}>{item.time}</Text>
-            {isExpanded && (
-              <Text style={{ fontSize: 12, marginTop: 5 }}>
-                @TODO: ADD MORE INFO ON ASSIGNMENTS
-              </Text>
-            )}
-          </View>
-        </TouchableOpacity>
-      );
-    });
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  });
+
 
   const RenderEmptyData: React.FC = () => (
     <View style={styles.emptyAgenda}>
