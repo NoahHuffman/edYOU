@@ -229,7 +229,7 @@ const HomeScreen: React.FC = () => {
     const isExpanded = expandedItems.has(uniqueId);
 
     const handlePress = () => {
-      console.log("You clicked: " + uniqueId);
+      console.log("You clicked: " + uniqueId + ". Expanded: " + isExpanded);
       toggleAgendaItemExpansion(uniqueId);
     };
 
