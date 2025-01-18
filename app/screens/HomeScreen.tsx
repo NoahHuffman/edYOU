@@ -162,7 +162,6 @@ const HomeScreen: React.FC = () => {
         for (let i = 0; i < assignmentsData.length; i++) {
           if (assignmentsData[i].assignments.length > 0) {
             for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
-              let description;
               const courseName = assignmentsData[i].courseName;
               const assignment: Assignment = assignmentsData[i].assignments[j];
               const descriptionHtml = assignment.description;
@@ -173,7 +172,7 @@ const HomeScreen: React.FC = () => {
                 assignment.name += " (No due date)";
               }
               if (!assignment.description) {
-                assignment.description = "No description...";
+                assignment.description = "No description provided.";
               } else {
                 assignment.description = descriptionHtml
                 .replace(/<[^>]*>/g, " ")
@@ -249,8 +248,8 @@ const HomeScreen: React.FC = () => {
     const backgroundColor = courseColorMap.current[item.course_id] || "white";
     return (
       <AgendaItem
-        courseName={item.name}
-        assignmentName={item.course_id}
+        assignmentName={item.name}
+        courseName={item.course_id}
         dueTime={item.time}
         description={item.description}
         backgroundColor={backgroundColor}

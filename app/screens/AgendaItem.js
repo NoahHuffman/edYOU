@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 export const AgendaItem = ({
-  courseName,
   assignmentName,
+  courseName,
   dueTime,
   description,
   backgroundColor,
@@ -21,11 +21,20 @@ export const AgendaItem = ({
       }}
     >
       <TouchableOpacity onPress={() => setIsExpanded((old) => !old)}>
-        <Text style={{ fontWeight: "bold", fontSize: 14 }}>{courseName}</Text>
-        <Text style={{ fontSize: 12 }}>{assignmentName}</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 14 }}>
+          {assignmentName}
+        </Text>
+        <Text style={{ fontSize: 12 }}>{courseName}</Text>
         <Text style={{ fontSize: 12 }}>{dueTime}</Text>
       </TouchableOpacity>
-      {isExpanded && <Text>{description}</Text>}
+      {isExpanded && (
+        <View>
+          <View
+            style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
+          />
+          <Text>{description}</Text>
+        </View>
+      )}
     </View>
   );
 };
