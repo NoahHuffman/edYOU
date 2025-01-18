@@ -223,7 +223,6 @@ const HomeScreen: React.FC = () => {
   const RenderAgendaItem: React.FC<{
     item: Assignment & { className: string };
   }> = memo(({ item }) => {
-    console.log("Items for Agenda:", items);
     if (!item) {
       console.warn("Item is undefined");
       return null;
