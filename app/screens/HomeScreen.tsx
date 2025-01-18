@@ -14,7 +14,7 @@ import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from "react-native-vector-icons/AntDesign";
 import { PrimaryColors } from "../constants/Colors";
 
 const HomeScreen: React.FC = () => {
@@ -31,6 +31,7 @@ const HomeScreen: React.FC = () => {
   const assignedColors = new Set<string>();
   const currentDate = new Date();
   const newItems: Items = {};
+  let temp = true;
 
   const customTheme = {
     agendaDayTextColor: "#B0B0B0",
@@ -94,6 +95,7 @@ const HomeScreen: React.FC = () => {
   const addNewAssignment = (
     courseName: string,
     assignmentName: string,
+    description: string,
     dueDate: Date
   ) => {
     if (!courseName || !assignmentName) {
@@ -112,6 +114,7 @@ const HomeScreen: React.FC = () => {
     updatedItems[formattedDate].push({
       course_id: courseName,
       name: assignmentName,
+      description: assignmentName,
       time: dueDate.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
@@ -159,17 +162,29 @@ const HomeScreen: React.FC = () => {
         for (let i = 0; i < assignmentsData.length; i++) {
           if (assignmentsData[i].assignments.length > 0) {
             for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
+              let description;
               const courseName = assignmentsData[i].courseName;
               const assignment: Assignment = assignmentsData[i].assignments[j];
+              const descriptionHtml = assignment.description;
+              console.log(descriptionHtml);
 
               if (!assignment.name) assignment.name = "Unnamed Assignment";
               if (!assignment.due_at) {
                 assignment.due_at = currentDate.toISOString();
                 assignment.name += " (No due date)";
               }
+              if (!assignment.description) {
+                assignment.description = "No description...";
+              } else {
+                assignment.description = descriptionHtml
+                .replace(/<[^>]*>/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+              }
 
               const assignmentEntry = {
                 name: assignment.name,
+                description: assignment.description,
                 dueDate: assignment.due_at,
               };
 
@@ -195,6 +210,7 @@ const HomeScreen: React.FC = () => {
             newItems[formattedDate].push({
               course_id: courseName,
               name: assignment.name,
+              description: assignment.description,
               time: dueDate.toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -232,13 +248,12 @@ const HomeScreen: React.FC = () => {
     }
 
     const backgroundColor = courseColorMap.current[item.course_id] || "white";
-    const description = "@TODO: ADD MORE INFO ON ASSIGNMENTS";
     return (
       <AgendaItem
         courseName={item.name}
         assignmentName={item.course_id}
         dueTime={item.time}
-        description={description}
+        description={item.description}
         backgroundColor={backgroundColor}
       />
     );
@@ -256,9 +271,8 @@ const HomeScreen: React.FC = () => {
         style={styles.addButton}
         onPress={() => setModalVisible(true)}
       >
-        {/* <Text style={styles.addButtonText}>+</Text> */}
-          <Icon name="plus" size={24} color="white" />
-        </TouchableOpacity>
+        <Icon name="plus" size={24} color="white" />
+      </TouchableOpacity>
 
       <Modal
         animationType="slide"
@@ -316,7 +330,12 @@ const HomeScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.addAssignmentButton}
               onPress={() =>
-                addNewAssignment(classNameInput, assignmentNameInput, dueTime)
+                addNewAssignment(
+                  classNameInput,
+                  assignmentNameInput,
+                  "Assignment Description",
+                  dueTime
+                )
               }
             >
               <Text style={styles.addAssignmentButtonText}>Add Assignment</Text>
