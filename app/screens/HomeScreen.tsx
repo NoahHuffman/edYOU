@@ -13,11 +13,11 @@ import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
 import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { AgendaItem } from "./AgendaItem";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [dueDate, setDueDate] = useState(new Date());
   const [dueTime, setDueTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -123,18 +123,6 @@ const HomeScreen: React.FC = () => {
     setModalVisible(false);
   };
 
-  const toggleAgendaItemExpansion = (uniqueId: string) => {
-    setExpandedItems((prev) => {
-      const newExpandedItems = new Set(prev);
-      if (newExpandedItems.has(uniqueId)) {
-        newExpandedItems.delete(uniqueId);
-      } else {
-        newExpandedItems.add(uniqueId);
-      }
-      return newExpandedItems;
-    });
-  };
-
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -142,19 +130,24 @@ const HomeScreen: React.FC = () => {
         const coursesData = await fetchCourses();
 
         for (let i = 0; i < coursesData.length; i++) {
-          const courseId = coursesData[i].course_id;
-          const fullCourseName = coursesData[i].context_name;
-          if (
-            courseId &&
-            fullCourseName &&
-            courseId.toString().length == UTC_COURSE_CODE_LENGTH &&
-            !Object.values(courses).includes(courseId)
-          ) {
-            const courseName = getClassName(coursesData[i].context_name);
-            courses[courseName] = courseId;
+          const course = coursesData[i];
+          if (course && course.course_id && course.context_name) {
+            const courseId = course.course_id;
+            const fullCourseName = course.context_name;
+            if (
+              courseId &&
+              fullCourseName &&
+              courseId.toString().length == UTC_COURSE_CODE_LENGTH &&
+              !Object.values(courses).includes(courseId)
+            ) {
+              const courseName = getClassName(course.context_name);
+              courses[courseName] = courseId;
 
-            courseColorMap.current[courseName] =
-              getColorForCourseId(courseName);
+              courseColorMap.current[courseName] =
+                getColorForCourseId(courseName);
+            }
+          } else {
+            console.warn("Course data is missing:", course);
           }
         }
 
@@ -207,7 +200,6 @@ const HomeScreen: React.FC = () => {
             });
           });
         }
-
         // console.log(courseAssignments);
         // console.log(newItems);
 
@@ -222,49 +214,31 @@ const HomeScreen: React.FC = () => {
     loadData();
   }, []);
 
-  const RenderItem: React.FC<{ item: Assignment & { className: string } }> =
-  memo(({ item }) => {
-    const uniqueId = `${item.course_id}-${item.name}`;
-    const backgroundColor = courseColorMap.current[item.course_id] || "white";
-    const isExpanded = expandedItems.has(uniqueId);
-
-    const handlePress = () => {
-      console.log("You clicked: " + uniqueId + ". Expanded: " + isExpanded);
-      toggleAgendaItemExpansion(uniqueId);
-    };
-
-    return (
-      <TouchableOpacity onPress={handlePress}>
-        <View
-          style={{
-            marginVertical: 6,
-            backgroundColor: backgroundColor,
-            marginHorizontal: 10,
-            padding: 10,
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 14 }}>
-            {item.name}
-          </Text>
-          <Text style={{ fontSize: 12 }}>{item.course_id}</Text>
-          <Text style={{ fontSize: 12 }}>{item.time}</Text>
-          {isExpanded && (
-            <Text style={{ fontSize: 12, marginTop: 5 }}>
-              @TODO: ADD MORE INFO ON ASSIGNMENTS
-            </Text>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  });
-
-
   const RenderEmptyData: React.FC = () => (
     <View style={styles.emptyAgenda}>
       <Text>No assignments due today!</Text>
     </View>
   );
+
+  const RenderAgendaItem: React.FC<{
+    item: Assignment & { className: string };
+  }> = memo(({ item }) => {
+    console.log("Items for Agenda:", items);
+    if (!item) {
+      console.warn("Item is undefined");
+      return null;
+    }
+
+    const description = "@TODO: ADD MORE INFO ON ASSIGNMENTS";
+    return (
+      <AgendaItem
+        courseName={item.name}
+        assignmentName={item.course_id}
+        dueTime={item.time}
+        description={description}
+      />
+    );
+  });
 
   return (
     <View style={{ flex: 1, marginHorizontal: 10 }}>
@@ -369,7 +343,7 @@ const HomeScreen: React.FC = () => {
         showOnlySelectedDayItems={true}
         theme={customTheme}
         renderItem={(item: Assignment & { className: string }) => (
-          <RenderItem item={item} />
+          <RenderAgendaItem item={item} />
         )}
         renderEmptyData={() => <RenderEmptyData />}
       />
