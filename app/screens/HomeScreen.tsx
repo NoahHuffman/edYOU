@@ -166,7 +166,6 @@ const HomeScreen: React.FC = () => {
               const courseName = assignmentsData[i].courseName;
               const assignment: Assignment = assignmentsData[i].assignments[j];
               const descriptionHtml = assignment.description;
-              console.log(descriptionHtml);
 
               if (!assignment.name) assignment.name = "Unnamed Assignment";
               if (!assignment.due_at) {
