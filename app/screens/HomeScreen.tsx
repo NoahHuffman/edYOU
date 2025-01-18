@@ -228,6 +228,7 @@ const HomeScreen: React.FC = () => {
       return null;
     }
 
+    const backgroundColor = courseColorMap.current[item.course_id] || "white";
     const description = "@TODO: ADD MORE INFO ON ASSIGNMENTS";
     return (
       <AgendaItem
@@ -235,6 +236,7 @@ const HomeScreen: React.FC = () => {
         assignmentName={item.course_id}
         dueTime={item.time}
         description={description}
+        backgroundColor={backgroundColor}
       />
     );
   });
