@@ -13,7 +13,7 @@ export const AgendaItem = ({
   return (
     <View
       style={{
-        marginVertical: 6,
+        marginTop: 12,
         backgroundColor: backgroundColor,
         marginHorizontal: 10,
         padding: 10,

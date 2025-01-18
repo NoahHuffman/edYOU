@@ -14,6 +14,8 @@ import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
+import Icon from 'react-native-vector-icons/AntDesign';
+import { PrimaryColors } from "../constants/Colors";
 
 const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
@@ -35,6 +37,7 @@ const HomeScreen: React.FC = () => {
     agendaDayNumColor: "#B0B0B0",
     agendaTodayColor: "#B0B0B0",
     agendaKnobColor: "#B0B0B0",
+    selectedDayBackgroundColor: PrimaryColors.lightBlue.background,
   };
 
   const courses: { [key: string]: number } = {};
@@ -253,8 +256,9 @@ const HomeScreen: React.FC = () => {
         style={styles.addButton}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
+        {/* <Text style={styles.addButtonText}>+</Text> */}
+          <Icon name="plus" size={24} color="white" />
+        </TouchableOpacity>
 
       <Modal
         animationType="slide"
@@ -357,7 +361,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: "blue",
+    backgroundColor: PrimaryColors.lightBlue.background,
     borderRadius: 25,
     width: 50,
     height: 50,
@@ -372,10 +376,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     zIndex: 1,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 24,
   },
   modalView: {
     flex: 1,
