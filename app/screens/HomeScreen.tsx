@@ -174,10 +174,10 @@ const HomeScreen: React.FC = () => {
               if (!assignment.description) {
                 assignment.description = "No description provided.";
               } else {
-                assignment.description = descriptionHtml
-                .replace(/<[^>]*>/g, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+                assignment.description = descriptionHtml;
+                // .replace(/<[^>]*>/g, " ")
+                // .replace(/\s+/g, " ")
+                // .trim();
               }
 
               const assignmentEntry = {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import RenderHTML from 'react-native-render-html';
 
 export const AgendaItem = ({
   assignmentName,
@@ -9,6 +10,7 @@ export const AgendaItem = ({
   backgroundColor,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { width } = Dimensions.get('window');
 
   return (
     <View
@@ -32,7 +34,8 @@ export const AgendaItem = ({
           <View
             style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
           />
-          <Text>{description}</Text>
+          {/* <Text>{description}</Text> */}
+          <RenderHTML contentWidth={width} source={{ html: description }} />
         </View>
       )}
     </View>
