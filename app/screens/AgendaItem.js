@@ -35,7 +35,7 @@ export const AgendaItem = ({
             style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
           />
           {/* <Text>{description}</Text> */}
-          <RenderHTML contentWidth={width} source={{ html: description }} />
+          <RenderHTML contentWidth={width} source={{ html: description }} ignoredDomTags={['link']} />
         </View>
       )}
     </View>
