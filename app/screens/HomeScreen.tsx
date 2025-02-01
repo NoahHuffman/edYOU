@@ -171,6 +171,10 @@ const HomeScreen: React.FC = () => {
               if (!assignment.due_at) {
                 assignment.due_at = currentDate.toISOString();
                 assignment.name += " (No due date)";
+              } else {
+                const date = new Date(assignment.due_at);
+                date.setDate(date.getDate() - 1);
+                assignment.due_at = date.toISOString();
               }
               if (!assignment.description) {
                 assignment.description = "No description provided.";

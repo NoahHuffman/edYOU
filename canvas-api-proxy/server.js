@@ -33,7 +33,6 @@ app.post("/getAssignments", async (req, res) => {
   const courseId = req.body.courseId;
 
   try {
-    console.log(courseId);
     const response = await axios.get(
       `https://utchattanooga.instructure.com/api/v1/courses/${courseId}/assignments`,
       {
