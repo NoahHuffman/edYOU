@@ -13,7 +13,7 @@ app.get("/getCourses", async (req, res) => {
 
   try {
     const response = await axios.get(
-      "https://utchattanooga.instructure.com/api/v1/planner/items?start_date=2025-01-04T05:00:00.000Z&order=asc",
+      "https://utchattanooga.instructure.com/api/v1/courses?enrollment_type=student&enrollment_state=active&per_page=100&page=1",
       {
         headers: {
           Authorization: accessToken,
@@ -33,6 +33,7 @@ app.post("/getAssignments", async (req, res) => {
   const courseId = req.body.courseId;
 
   try {
+    console.log(courseId);
     const response = await axios.get(
       `https://utchattanooga.instructure.com/api/v1/courses/${courseId}/assignments`,
       {

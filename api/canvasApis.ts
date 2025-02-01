@@ -3,6 +3,7 @@ import { Assignment } from "@/api/interfaces";
 
 const accessToken = CANVAS_KEY;
 const baseUrl = "http://192.168.1.10:3000/";
+// const baseUrl = "http://10.168.21.50:3000/";
 const coursesUrl = baseUrl + "getCourses";
 const assignmentsUrl = baseUrl + "getAssignments";
 
@@ -17,7 +18,12 @@ export const fetchCourses = async () => {
     });
 
     const data = await response.json();
-    return data;
+
+    const activeCourses = data.filter((course: any) => 
+      course.enrollments.some((enrollment: any) => enrollment.enrollment_state === 'active')
+    );
+
+    return activeCourses;
   } catch (error: any) {
     console.error("Error fetching courses: ", error.message);
     throw error;

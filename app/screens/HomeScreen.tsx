@@ -137,16 +137,16 @@ const HomeScreen: React.FC = () => {
 
         for (let i = 0; i < coursesData.length; i++) {
           const course = coursesData[i];
-          if (course && course.course_id && course.context_name) {
-            const courseId = course.course_id;
-            const fullCourseName = course.context_name;
+          if (course && course.id && course.name) {
+            const courseId = course.id;
+            const fullCourseName = course.name;
             if (
               courseId &&
               fullCourseName &&
               courseId.toString().length == UTC_COURSE_CODE_LENGTH &&
               !Object.values(courses).includes(courseId)
             ) {
-              const courseName = getClassName(course.context_name);
+              const courseName = getClassName(course.name);
               courses[courseName] = courseId;
 
               courseColorMap.current[courseName] =
