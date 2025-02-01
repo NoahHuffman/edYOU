@@ -165,6 +165,7 @@ const HomeScreen: React.FC = () => {
               const courseName = assignmentsData[i].courseName;
               const assignment: Assignment = assignmentsData[i].assignments[j];
               const descriptionHtml = assignment.description;
+              const html_url = assignment.html_url;
 
               if (!assignment.name) assignment.name = "Unnamed Assignment";
               if (!assignment.due_at) {
@@ -184,6 +185,7 @@ const HomeScreen: React.FC = () => {
                 name: assignment.name,
                 description: assignment.description,
                 dueDate: assignment.due_at,
+                html_url: html_url,
               };
 
               if (!courseAssignments[courseName]) {
@@ -213,6 +215,7 @@ const HomeScreen: React.FC = () => {
                 hour: "2-digit",
                 minute: "2-digit",
               }),
+              html_url: assignment.html_url,
               due_at: assignment.dueDate,
             });
           });
@@ -238,7 +241,7 @@ const HomeScreen: React.FC = () => {
   );
 
   const RenderAgendaItem: React.FC<{
-    item: Assignment & { className: string };
+    item: Assignment & { className: string, html_url?: string };
   }> = memo(({ item }) => {
     if (!item) {
       console.warn("Item is undefined");
@@ -252,6 +255,7 @@ const HomeScreen: React.FC = () => {
         courseName={item.course_id}
         dueTime={item.time}
         description={item.description}
+        html_url={item.html_url}
         backgroundColor={backgroundColor}
       />
     );

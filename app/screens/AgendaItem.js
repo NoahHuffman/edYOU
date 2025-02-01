@@ -15,6 +15,7 @@ export const AgendaItem = ({
   courseName,
   dueTime,
   description,
+  html_url,
   backgroundColor,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -43,13 +44,15 @@ export const AgendaItem = ({
             style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
           />
           <View style={styles.container}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => Linking.openURL("http://google.com")} // @TODO: assignment.html_url
-            >
-              <Text style={styles.buttonText}>Go to assignment</Text>
-              <Icon name="external-link" size={16} color="white" />
-            </TouchableOpacity>
+            {html_url && (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => Linking.openURL(html_url)}
+              >
+                <Text style={styles.buttonText}>Go to assignment</Text>
+                <Icon name="external-link" size={16} color="white" />
+              </TouchableOpacity>
+            )}
           </View>
           <RenderHTML
             contentWidth={width}
