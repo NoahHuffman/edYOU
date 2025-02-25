@@ -9,6 +9,12 @@ import {
 } from "react-native";
 import RenderHTML from "react-native-render-html";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['TNodeChildrenRenderer: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
+LogBox.ignoreLogs(['Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
+LogBox.ignoreLogs(['MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.']);
+LogBox.ignoreLogs(['TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
 
 export const AgendaItem = ({
   assignmentName,
