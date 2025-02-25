@@ -60,7 +60,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Courses:</Text>
       {Object.entries(courses).map(([course]) => (
-        <TouchableOpacity key={course} onPress={() => handleEditCourse({ course })}>
+        <TouchableOpacity key={course} style={styles.courseBox} onPress={() => handleEditCourse({ course })}>
           <Text style={styles.courseText}>{course}</Text>
         </TouchableOpacity>
       ))}
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
+    backgroundColor: 'lightgrey',
   },
   courseText: {
     fontSize: 18,
