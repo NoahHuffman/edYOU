@@ -37,9 +37,9 @@ function MainContainer() {
         headerShown: false,
       })}>
       
-      <Tab.Screen name={homeName} component={HomeScreen} />
-      <Tab.Screen name={loginName} component={Login} />
-      <Tab.Screen name={settingsName} component={SettingsScreen} />
+      <Tab.Screen name={homeName} component={HomeScreen} options={{ tabBarLabel: '' }} />
+      <Tab.Screen name={loginName} component={Login} options={{ tabBarLabel: '' }} />
+      <Tab.Screen name={settingsName} component={SettingsScreen} options={{ tabBarLabel: '' }} />
 
     </Tab.Navigator>
   );
