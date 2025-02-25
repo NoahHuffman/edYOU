@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, But
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import ColorWheel from 'react-native-wheel-color-picker';
+import Icon from "react-native-vector-icons/AntDesign";
 
 type SettingsScreenProps = {
   route: RouteProp<
@@ -62,6 +63,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
       {Object.entries(courses).map(([course]) => (
         <TouchableOpacity key={course} style={styles.courseBox} onPress={() => handleEditCourse({ course })}>
           <Text style={styles.courseText}>{course}</Text>
+          <Icon name="edit" size={24} color="black" style={styles.editIcon} />
         </TouchableOpacity>
       ))}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -129,6 +131,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '50%',
+  },
+  editIcon: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
   },
 });
 
