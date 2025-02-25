@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Button } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import ColorWheel from 'react-native-wheel-color-picker';
 
 type SettingsScreenProps = {
   route: RouteProp<
@@ -65,14 +66,16 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text>Edit Course Color</Text>
-            <TextInput
-              style={styles.input}
-              value={newColor}
-              onChangeText={setNewColor}
-              placeholder="Enter new color"
-            />
-            <Button title="Save" onPress={handleSaveColor} />
-            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            <View style={styles.colorWheelContainer}>
+              <ColorWheel
+                color={newColor}
+                onColorChange={setNewColor}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title="Cancel" onPress={() => setModalVisible(false)} color="gray" />
+              <Button title="Save" onPress={handleSaveColor} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -111,13 +114,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
+  colorWheelContainer: {
+    width: 250,
+    height: 250,
     marginBottom: 15,
-    width: "100%",
-    paddingHorizontal: 10,
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '50%',
   },
 });
 
