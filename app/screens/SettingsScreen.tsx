@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, TextInput, Button } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type SettingsScreenProps = {
   route: RouteProp<
-    { params: { courses?: { [key: string]: number } } },
+    { params: { courses?: { [key: string]: { id: number; color: string } } } },
     "params"
   >;
   navigation: StackNavigationProp<any>;
@@ -13,6 +13,9 @@ type SettingsScreenProps = {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<{ id: number; color: string } | null>(null);
+  const [newColor, setNewColor] = useState("");
   const courses = route.params?.courses;
 
   useEffect(() => {
@@ -21,14 +24,23 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
     }
   }, [courses]);
 
+  const handleEditCourse = (course: { id: number; color: string }) => {
+    setSelectedCourse(course);
+    setNewColor(course.color);
+    setModalVisible(true);
+  };
+
+  const handleSaveColor = () => {
+    if (selectedCourse) {
+      courses![selectedCourse.id].color = newColor;
+      setModalVisible(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
-        {loading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color="blue" />
-          </View>
-        )}
+        <ActivityIndicator size="large" color="blue" />
       </View>
     );
   }
@@ -43,33 +55,69 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Settings Screen</Text>
-      {Object.entries(courses).map(([courseName, courseId]) => (
-        <Text key={courseId}>
-          {courseName}: {courseId}
-        </Text>
+      <Text style={styles.title}>Courses:</Text>
+      {Object.entries(courses).map(([courseName, { id, color }]) => (
+        <TouchableOpacity key={id} style={[styles.courseBox, { backgroundColor: color }]} onPress={() => handleEditCourse({ id, color })}>
+          <Text style={styles.courseText}>{courseName}</Text>
+        </TouchableOpacity>
       ))}
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>Edit Course Color</Text>
+            <TextInput
+              style={styles.input}
+              value={newColor}
+              onChangeText={setNewColor}
+              placeholder="Enter new color"
+            />
+            <Button title="Save" onPress={handleSaveColor} />
+            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fae3d9",
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  courseBox: {
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  courseText: {
+    fontSize: 18,
+    color: "#000",
+  },
+  modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  loadingOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
+  modalContent: {
+    width: 300,
+    padding: 20,
     backgroundColor: "white",
-    zIndex: 2,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 15,
+    width: "100%",
+    paddingHorizontal: 10,
   },
 });
 
