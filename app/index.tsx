@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Login from './components/Login';
+import { useState } from 'react';
 
 const homeName = "Home";
 const loginName = "Login";
@@ -12,6 +13,8 @@ const settingsName = "Settings";
 const Tab = createBottomTabNavigator();
 
 function MainContainer() {
+  const [currentCourses, setCurrentCourses] = useState<{ [key: string]: string }>({});
+
   return (
     <Tab.Navigator
       initialRouteName={homeName}
@@ -37,9 +40,21 @@ function MainContainer() {
         headerShown: false,
       })}>
       
-      <Tab.Screen name={homeName} component={HomeScreen} options={{ tabBarLabel: '' }} />
-      <Tab.Screen name={loginName} component={Login} options={{ tabBarLabel: '' }} />
-      <Tab.Screen name={settingsName} component={SettingsScreen as React.FC} options={{ tabBarLabel: '' }} />
+      <Tab.Screen 
+        name={homeName} 
+        children={() => <HomeScreen currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />} 
+        options={{ tabBarLabel: '' }} 
+      />
+      <Tab.Screen 
+        name={loginName} 
+        component={Login} 
+        options={{ tabBarLabel: '' }} 
+      />
+      <Tab.Screen 
+        name={settingsName} 
+        children={() => <SettingsScreen currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />} 
+        options={{ tabBarLabel: '' }} 
+      />
 
     </Tab.Navigator>
   );

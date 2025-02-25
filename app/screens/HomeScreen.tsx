@@ -15,8 +15,12 @@ import { AgendaItem } from "./AgendaItem";
 import Icon from "react-native-vector-icons/AntDesign";
 import { PrimaryColors } from "../constants/Colors";
 import { loadAssignments, loadCourses } from "../services/app.service";
+import { useFocusEffect } from "expo-router";
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC<{
+  currentCourses: { [key: string]: string };
+  setCurrentCourses: (courses: { [key: string]: string }) => void;
+}> = ({ currentCourses, setCurrentCourses }) => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -101,6 +105,7 @@ const HomeScreen: React.FC = () => {
 
         setItems(newItems);
         setCourseColorMap(loadedCourseColorMap);
+        setCurrentCourses(loadedCourseColorMap);
       } catch (error: any) {
         console.error(error.message);
       } finally {
@@ -110,6 +115,12 @@ const HomeScreen: React.FC = () => {
 
     loadData();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setCourseColorMap(currentCourses);
+    }, [currentCourses])
+  );
 
   const RenderEmptyData: React.FC = () => (
     <View style={styles.emptyAgenda}>
