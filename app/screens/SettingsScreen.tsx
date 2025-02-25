@@ -121,12 +121,9 @@ const styles = StyleSheet.create({
   colorWheelContainer: {
     width: 250,
     height: 250,
-    marginBottom: 15,
     alignItems: 'center',
-    zIndex: 1551,
   },
   buttonContainer: {
-    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '50%',
