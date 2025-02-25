@@ -15,7 +15,7 @@ type SettingsScreenProps = {
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<{ id: number; color: string } | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [newColor, setNewColor] = useState("");
   const courses = route.params?.courses;
 
@@ -25,15 +25,16 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
     }
   }, [courses]);
 
-  const handleEditCourse = (course: { id: number; color: string }) => {
-    setSelectedCourse(course);
-    setNewColor(course.color);
+  const handleEditCourse = (courseName: {course: string}) => {
+    setSelectedCourse(courseName.course);
+    setNewColor(courseName.course);
     setModalVisible(true);
   };
 
   const handleSaveColor = () => {
     if (selectedCourse) {
       // courses![selectedCourse.id].color = newColor;
+      console.log(selectedCourse);
       console.log(newColor);
       setModalVisible(false);
     }
@@ -58,9 +59,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Courses:</Text>
-      {Object.entries(courses).map(([courseName, { id, color }]) => (
-        <TouchableOpacity key={id} style={[styles.courseBox, { backgroundColor: color }]} onPress={() => handleEditCourse({ id, color })}>
-          <Text style={styles.courseText}>{courseName}</Text>
+      {Object.entries(courses).map(([course]) => (
+        <TouchableOpacity key={course} onPress={() => handleEditCourse({ course })}>
+          <Text style={styles.courseText}>{course}</Text>
         </TouchableOpacity>
       ))}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
