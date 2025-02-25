@@ -10,14 +10,13 @@ import {
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, Items } from "@/api/interfaces";
-import { settingsName } from "@/api/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
 import Icon from "react-native-vector-icons/AntDesign";
 import { PrimaryColors } from "../constants/Colors";
 import { loadAssignments, loadCourses } from "../services/app.service";
 
-const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const HomeScreen: React.FC = () => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -95,16 +94,13 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       try {
         const { courses, courseColorMap: loadedCourseColorMap } =
           await loadCourses();
-        const newItems = await loadAssignments(courses, currentDate.toISOString());
+        const newItems = await loadAssignments(
+          courses,
+          currentDate.toISOString()
+        );
 
         setItems(newItems);
         setCourseColorMap(loadedCourseColorMap);
-        const filteredCourses = Object.fromEntries(
-          Object.entries(loadedCourseColorMap).filter(
-            ([key, value]) => key && value
-          )
-        );
-        navigation.navigate(settingsName, { courses: filteredCourses });
       } catch (error: any) {
         console.error(error.message);
       } finally {

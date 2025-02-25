@@ -8,34 +8,30 @@ import {
   Modal,
   Button,
 } from "react-native";
-import { RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import ColorWheel from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/AntDesign";
+import { loadCourses } from "../services/app.service";
 
-type SettingsScreenProps = {
-  route: RouteProp<
-    { params: { courses?: { [key: string]: string } } },
-    "params"
-  >;
-  navigation: StackNavigationProp<any>;
-};
-
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
+const SettingsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [newColor, setNewColor] = useState("");
-  const [currentCourses, setCurrentCourses] = useState(
-    route.params?.courses || {}
-  );
-  const courses = route.params?.courses;
+  const [currentCourses, setCurrentCourses] = useState<{
+    [key: string]: string;
+  }>({});
 
   useEffect(() => {
-    if (courses) {
+    const fetchCourses = async () => {
+      const { courseColorMap: courseColorMap } = await loadCourses();
+      const filteredCourseColorMap = Object.fromEntries(
+        Object.entries(courseColorMap).filter(([key, value]) => key && value)
+      );
+      setCurrentCourses(filteredCourseColorMap);
       setLoading(false);
-    }
-  }, [courses]);
+    };
+    fetchCourses();
+  }, []);
 
   const handleEditCourse = (courseName: { course: string }) => {
     setSelectedCourse(courseName.course);
@@ -46,7 +42,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   const handleSaveColor = () => {
     if (selectedCourse) {
       const updatedCourses = {
-        ...courses,
+        ...currentCourses,
         [selectedCourse]: newColor,
       };
       setCurrentCourses(updatedCourses);
@@ -62,7 +58,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
     );
   }
 
-  if (!courses || Object.keys(courses).length === 0) {
+  if (!currentCourses || Object.keys(currentCourses).length === 0) {
     return (
       <View style={styles.container}>
         <Text>No course data available.</Text>
