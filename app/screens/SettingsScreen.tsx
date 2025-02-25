@@ -33,7 +33,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
 
   const handleSaveColor = () => {
     if (selectedCourse) {
-      courses![selectedCourse.id].color = newColor;
+      // courses![selectedCourse.id].color = newColor;
+      console.log(newColor);
       setModalVisible(false);
     }
   };
@@ -70,6 +71,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
               <ColorWheel
                 color={newColor}
                 onColorChange={setNewColor}
+                swatches={false}
+                sliderHidden={true}
+                thumbSize={30}
               />
             </View>
             <View style={styles.buttonContainer}>
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
     height: 250,
     marginBottom: 15,
     alignItems: 'center',
+    zIndex: 1551,
   },
   buttonContainer: {
     marginTop: 20,
