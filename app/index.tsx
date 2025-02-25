@@ -39,7 +39,7 @@ function MainContainer() {
       
       <Tab.Screen name={homeName} component={HomeScreen} options={{ tabBarLabel: '' }} />
       <Tab.Screen name={loginName} component={Login} options={{ tabBarLabel: '' }} />
-      <Tab.Screen name={settingsName} component={SettingsScreen} options={{ tabBarLabel: '' }} />
+      <Tab.Screen name={settingsName} component={SettingsScreen as React.FC} options={{ tabBarLabel: '' }} />
 
     </Tab.Navigator>
   );

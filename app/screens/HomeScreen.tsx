@@ -10,14 +10,14 @@ import {
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
-import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
+import { UTC_COURSE_CODE_LENGTH, getClassName, settingsName } from "@/api/constants";
 import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
 import Icon from "react-native-vector-icons/AntDesign";
 import { PrimaryColors } from "../constants/Colors";
 
-const HomeScreen: React.FC = () => {
+const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -228,6 +228,10 @@ const HomeScreen: React.FC = () => {
         // console.log(newItems);
 
         setItems(newItems);
+        const filteredCourses = Object.fromEntries(
+          Object.entries(courses).filter(([key, value]) => key && value)
+        );
+        navigation.navigate(settingsName, { courses: filteredCourses });
       } catch (error: any) {
         console.error(error.message);
       } finally {
