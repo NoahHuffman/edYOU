@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useRef } from "react";
+import React, { useState, useEffect, memo } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
-import { UTC_COURSE_CODE_LENGTH, getClassName, settingsName } from "@/api/constants";
-import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
+import { Assignment, Items } from "@/api/interfaces";
+import { settingsName } from "@/api/constants";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
 import Icon from "react-native-vector-icons/AntDesign";
 import { PrimaryColors } from "../constants/Colors";
+import { loadAssignments, loadCourses } from "../services/app.service";
 
 const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [items, setItems] = useState<Items>({});
@@ -27,11 +27,10 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [classNameInput, onChangeClassName] = React.useState("");
   const [assignmentNameInput, onChangeAssignmentName] = React.useState("");
   const [loading, setLoading] = useState(true);
-  const courseColorMap = useRef<{ [key: string]: string }>({});
-  const assignedColors = new Set<string>();
+  const [courseColorMap, setCourseColorMap] = useState<{
+    [key: string]: string;
+  }>({});
   const currentDate = new Date();
-  const newItems: Items = {};
-  let temp = true;
 
   const customTheme = {
     agendaDayTextColor: "#B0B0B0",
@@ -39,45 +38,6 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     agendaTodayColor: "#B0B0B0",
     agendaKnobColor: "#B0B0B0",
     selectedDayBackgroundColor: PrimaryColors.lightBlue.background,
-  };
-
-  const courses: { [key: string]: number } = {};
-  let courseAssignments: CourseAssignment = {};
-
-  const colorList = [
-    "#F8D3B0",
-    "#E1C6E7",
-    "#B2E0D9",
-    "#A4C8E1",
-    "#F4B6A0",
-    "#F9EBAE",
-    "#F2C6D4",
-    "#C8E1D4",
-    "#A3D1E5",
-    "#EDE1C2",
-  ];
-
-  const getColorForCourseId = (courseId: string): string => {
-    const hash = Array.from(courseId).reduce(
-      (acc, char) => acc + char.charCodeAt(0),
-      0
-    );
-    const index = hash % colorList.length;
-    const color = colorList[index];
-
-    if (assignedColors.has(color)) {
-      for (let i = 0; i < colorList.length; i++) {
-        const nextColor = colorList[(index + i) % colorList.length];
-        if (!assignedColors.has(nextColor)) {
-          assignedColors.add(nextColor);
-          return nextColor;
-        }
-      }
-    } else {
-      assignedColors.add(color);
-      return color;
-    }
-    return "white";
   };
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
@@ -133,103 +93,16 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const coursesData = await fetchCourses();
-
-        for (let i = 0; i < coursesData.length; i++) {
-          const course = coursesData[i];
-          if (course && course.id && course.name) {
-            const courseId = course.id;
-            const fullCourseName = course.name;
-            if (
-              courseId &&
-              fullCourseName &&
-              courseId.toString().length == UTC_COURSE_CODE_LENGTH &&
-              !Object.values(courses).includes(courseId)
-            ) {
-              const courseName = getClassName(course.name);
-              courses[courseName] = courseId;
-
-              courseColorMap.current[courseName] =
-                getColorForCourseId(courseName);
-            }
-          } else {
-            console.warn("Course data is missing:", course);
-          }
-        }
-
-        const assignmentsData = await fetchAssignments(courses);
-
-        for (let i = 0; i < assignmentsData.length; i++) {
-          if (assignmentsData[i].assignments.length > 0) {
-            for (let j = 0; j < assignmentsData[i].assignments.length; j++) {
-              const courseName = assignmentsData[i].courseName;
-              const assignment: Assignment = assignmentsData[i].assignments[j];
-              const descriptionHtml = assignment.description;
-              const html_url = assignment.html_url;
-
-              if (!assignment.name) assignment.name = "Unnamed Assignment";
-              if (!assignment.due_at) {
-                assignment.due_at = currentDate.toISOString();
-                assignment.name += " (No due date)";
-              } else {
-                const date = new Date(assignment.due_at);
-                date.setDate(date.getDate() - 1);
-                assignment.due_at = date.toISOString();
-              }
-              if (!assignment.description) {
-                assignment.description = "No description provided.";
-              } else {
-                assignment.description = descriptionHtml;
-                // .replace(/<[^>]*>/g, " ")
-                // .replace(/\s+/g, " ")
-                // .trim();
-              }
-
-              const assignmentEntry = {
-                name: assignment.name,
-                description: assignment.description,
-                dueDate: assignment.due_at,
-                html_url: html_url,
-              };
-
-              if (!courseAssignments[courseName]) {
-                courseAssignments[courseName] = [];
-              }
-              courseAssignments[courseName].push(assignmentEntry);
-            }
-          }
-        }
-
-        for (const courseName in courseAssignments) {
-          const assignments = courseAssignments[courseName];
-
-          assignments.forEach((assignment) => {
-            const dueDate = new Date(assignment.dueDate);
-            const formattedDate = dueDate.toISOString().split("T")[0];
-
-            if (!newItems[formattedDate]) {
-              newItems[formattedDate] = [];
-            }
-
-            newItems[formattedDate].push({
-              course_id: courseName,
-              name: assignment.name,
-              description: assignment.description,
-              time: dueDate.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-              html_url: assignment.html_url,
-              due_at: assignment.dueDate,
-            });
-          });
-        }
-        // console.log(courseAssignments);
-        // console.log(newItems);
+        const { courses, courseColorMap: loadedCourseColorMap } =
+          await loadCourses();
+        const newItems = await loadAssignments(courses, currentDate.toISOString());
 
         setItems(newItems);
+        setCourseColorMap(loadedCourseColorMap);
         const filteredCourses = Object.fromEntries(
-          Object.entries(courseColorMap.current).filter(([key, value]) => key && value)
+          Object.entries(loadedCourseColorMap).filter(
+            ([key, value]) => key && value
+          )
         );
         navigation.navigate(settingsName, { courses: filteredCourses });
       } catch (error: any) {
@@ -249,14 +122,14 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   );
 
   const RenderAgendaItem: React.FC<{
-    item: Assignment & { className: string, html_url?: string };
+    item: Assignment & { className: string; html_url?: string };
   }> = memo(({ item }) => {
     if (!item) {
       console.warn("Item is undefined");
       return null;
     }
 
-    const backgroundColor = courseColorMap.current[item.course_id] || "white";
+    const backgroundColor = courseColorMap[item.course_id] || "white";
     return (
       <AgendaItem
         assignmentName={item.name}
