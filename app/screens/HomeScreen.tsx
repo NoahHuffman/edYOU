@@ -229,7 +229,7 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
         setItems(newItems);
         const filteredCourses = Object.fromEntries(
-          Object.entries(courses).filter(([key, value]) => key && value)
+          Object.entries(courseColorMap.current).filter(([key, value]) => key && value)
         );
         navigation.navigate(settingsName, { courses: filteredCourses });
       } catch (error: any) {

@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Modal,
+  Button,
+} from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import ColorWheel from 'react-native-wheel-color-picker';
+import ColorWheel from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/AntDesign";
 
 type SettingsScreenProps = {
   route: RouteProp<
-    { params: { courses?: { [key: string]: { id: number; color: string } } } },
+    { params: { courses?: { [key: string]: string } } },
     "params"
   >;
   navigation: StackNavigationProp<any>;
@@ -18,6 +26,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [newColor, setNewColor] = useState("");
+  const [currentCourses, setCurrentCourses] = useState(
+    route.params?.courses || {}
+  );
   const courses = route.params?.courses;
 
   useEffect(() => {
@@ -26,7 +37,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
     }
   }, [courses]);
 
-  const handleEditCourse = (courseName: {course: string}) => {
+  const handleEditCourse = (courseName: { course: string }) => {
     setSelectedCourse(courseName.course);
     setNewColor(courseName.course);
     setModalVisible(true);
@@ -34,9 +45,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
 
   const handleSaveColor = () => {
     if (selectedCourse) {
-      // courses![selectedCourse.id].color = newColor;
-      console.log(selectedCourse);
-      console.log(newColor);
+      const updatedCourses = {
+        ...courses,
+        [selectedCourse]: newColor,
+      };
+      setCurrentCourses(updatedCourses);
       setModalVisible(false);
     }
   };
@@ -60,12 +73,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Courses:</Text>
-      {Object.entries(courses).map(([course]) => (
-        <TouchableOpacity key={course} style={styles.courseBox} onPress={() => handleEditCourse({ course })}>
+      {Object.entries(currentCourses).map(([course, color]) => (
+        <TouchableOpacity
+          key={course}
+          style={[styles.courseBox, { backgroundColor: color }]}
+          onPress={() => handleEditCourse({ course })}
+        >
           <Text style={styles.courseText}>{course}</Text>
           <Icon name="edit" size={24} color="black" style={styles.editIcon} />
         </TouchableOpacity>
       ))}
+
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -80,7 +98,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ route }) => {
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={() => setModalVisible(false)} color="gray" />
+              <Button
+                title="Cancel"
+                onPress={() => setModalVisible(false)}
+                color="gray"
+              />
               <Button title="Save" onPress={handleSaveColor} />
             </View>
           </View>
@@ -103,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: "lightgrey",
   },
   courseText: {
     fontSize: 18,
@@ -125,15 +147,15 @@ const styles = StyleSheet.create({
   colorWheelContainer: {
     width: 250,
     height: 250,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '50%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "50%",
   },
   editIcon: {
-    position: 'absolute',
+    position: "absolute",
     right: 15,
     top: 15,
   },
