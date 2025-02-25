@@ -74,7 +74,7 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     updatedItems[formattedDate].push({
       course_id: courseName,
       name: assignmentName,
-      description: assignmentName,
+      description: description,
       time: dueDate.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
