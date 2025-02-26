@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import HomeScreen from './screens/HomeScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import Login from './components/Login';
-import { useState } from 'react';
+import * as React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import HomeScreen from "./screens/HomeScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import Login from "./components/Login";
+import { useState } from "react";
 
 const homeName = "Home";
 const loginName = "Login";
@@ -13,7 +13,10 @@ const settingsName = "Settings";
 const Tab = createBottomTabNavigator();
 
 function MainContainer() {
-  const [currentCourses, setCurrentCourses] = useState<{ [key: string]: string }>({});
+  const [currentCourses, setCurrentCourses] = useState<{
+    [key: string]: string;
+  }>({});
+  const [colorChanged, setColorChanged] = useState(false);
 
   return (
     <Tab.Navigator
@@ -24,38 +27,50 @@ function MainContainer() {
           let rn = route.name;
 
           if (rn === homeName) {
-            iconName = focused ? 'home' : 'home-outline';
+            iconName = focused ? "home" : "home-outline";
           } else if (rn === loginName) {
-            iconName = focused ? 'list' : 'list-outline';
+            iconName = focused ? "list" : "list-outline";
           } else {
-            iconName = focused ? 'settings' : 'settings-outline';
+            iconName = focused ? "settings" : "settings-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'grey',
+        tabBarActiveTintColor: "tomato",
+        tabBarInactiveTintColor: "grey",
         tabBarLabelStyle: { paddingBottom: 10, fontSize: 10 },
         tabBarStyle: { padding: 10, height: 70 },
         headerShown: false,
-      })}>
-      
-      <Tab.Screen 
-        name={homeName} 
-        children={() => <HomeScreen currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />} 
-        options={{ tabBarLabel: '' }} 
+      })}
+    >
+      <Tab.Screen
+        name={homeName}
+        children={() => (
+          <HomeScreen
+            currentCourses={currentCourses}
+            setCurrentCourses={setCurrentCourses}
+            colorChanged={colorChanged}
+            setColorChanged={setColorChanged}
+          />
+        )}
+        options={{ tabBarLabel: "" }}
       />
-      <Tab.Screen 
-        name={loginName} 
-        component={Login} 
-        options={{ tabBarLabel: '' }} 
+      <Tab.Screen
+        name={loginName}
+        component={Login}
+        options={{ tabBarLabel: "" }}
       />
-      <Tab.Screen 
-        name={settingsName} 
-        children={() => <SettingsScreen currentCourses={currentCourses} setCurrentCourses={setCurrentCourses} />} 
-        options={{ tabBarLabel: '' }} 
+      <Tab.Screen
+        name={settingsName}
+        children={() => (
+          <SettingsScreen
+            currentCourses={currentCourses}
+            setCurrentCourses={setCurrentCourses}
+            setColorChanged={setColorChanged}
+          />
+        )}
+        options={{ tabBarLabel: "" }}
       />
-
     </Tab.Navigator>
   );
 }

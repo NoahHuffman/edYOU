@@ -30,7 +30,7 @@ export const fetchCourses = async () => {
   }
 };
 
-export const fetchAssignments = async (courses: { [key: string]: number }) => {
+export const fetchAssignments = async (courses: { [key: string]: string }) => {
   const assignmentsPromises = Object.entries(courses).map(
     async ([courseName, id]) => {
       try {

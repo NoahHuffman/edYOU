@@ -12,7 +12,11 @@ import ColorWheel from "react-native-wheel-color-picker";
 import Icon from "react-native-vector-icons/AntDesign";
 import { loadCourses } from "../services/app.service";
 
-const SettingsScreen: React.FC<{ currentCourses: { [key: string]: string }, setCurrentCourses: (courses: { [key: string]: string }) => void }> = ({ currentCourses, setCurrentCourses }) => {
+const SettingsScreen: React.FC<{
+  currentCourses: { [key: string]: string };
+  setCurrentCourses: (courses: { [key: string]: string }) => void;
+  setColorChanged: (changed: boolean) => void; // Add this line
+}> = ({ currentCourses, setCurrentCourses, setColorChanged }) => {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -43,6 +47,7 @@ const SettingsScreen: React.FC<{ currentCourses: { [key: string]: string }, setC
         [selectedCourse]: newColor,
       };
       setCurrentCourses(updatedCourses);
+      setColorChanged(true);
       setModalVisible(false);
     }
   };

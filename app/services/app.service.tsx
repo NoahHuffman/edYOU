@@ -3,7 +3,7 @@ import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
 import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
 
 export const loadCourses = async () => {
-  const courses: { [key: string]: number } = {};
+  const courses: { [key: string]: string } = {};
   const courseColorMap: { [key: string]: string } = {};
   const assignedColors = new Set<string>();
   const colorList = [
@@ -67,7 +67,7 @@ export const loadCourses = async () => {
 };
 
 export const loadAssignments = async (
-  courses: { [key: string]: number },
+  courses: { [key: string]: string },
   currentDate: string
 ) => {
   const courseAssignments: CourseAssignment = {};

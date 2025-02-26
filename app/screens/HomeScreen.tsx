@@ -20,7 +20,9 @@ import { useFocusEffect } from "expo-router";
 const HomeScreen: React.FC<{
   currentCourses: { [key: string]: string };
   setCurrentCourses: (courses: { [key: string]: string }) => void;
-}> = ({ currentCourses, setCurrentCourses }) => {
+  colorChanged: boolean;
+  setColorChanged: (changed: boolean) => void;
+}> = ({ currentCourses, setCurrentCourses, colorChanged, setColorChanged }) => {
   const [items, setItems] = useState<Items>({});
   const [modalVisible, setModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -31,6 +33,9 @@ const HomeScreen: React.FC<{
   const [assignmentNameInput, onChangeAssignmentName] = React.useState("");
   const [loading, setLoading] = useState(true);
   const [courseColorMap, setCourseColorMap] = useState<{
+    [key: string]: string;
+  }>({});
+  const [courses, setCourses] = useState<{
     [key: string]: string;
   }>({});
   const currentDate = new Date();
@@ -106,6 +111,7 @@ const HomeScreen: React.FC<{
         setItems(newItems);
         setCourseColorMap(loadedCourseColorMap);
         setCurrentCourses(loadedCourseColorMap);
+        setCourses(courses);
       } catch (error: any) {
         console.error(error.message);
       } finally {
@@ -118,8 +124,27 @@ const HomeScreen: React.FC<{
 
   useFocusEffect(
     React.useCallback(() => {
-      setCourseColorMap(currentCourses);
-    }, [currentCourses])
+      if (colorChanged) {
+        setCourseColorMap(currentCourses);
+        setCourses(courses);
+        setItems({});
+        const loadData = async () => {
+          setLoading(true);
+          try {
+            const newItems = await loadAssignments(courses, currentDate.toISOString());
+            setItems(newItems);
+          } catch (error: any) {
+            console.error(error.message);
+          } finally {
+            setLoading(false);
+          }
+        };
+        loadData();
+        setColorChanged(false);
+      } else {
+        setCourseColorMap(currentCourses);
+      }
+    }, [currentCourses, colorChanged])
   );
 
   const RenderEmptyData: React.FC = () => (
