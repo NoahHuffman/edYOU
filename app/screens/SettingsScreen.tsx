@@ -32,7 +32,7 @@ const SettingsScreen: React.FC<{ currentCourses: { [key: string]: string }, setC
 
   const handleEditCourse = (courseName: { course: string }) => {
     setSelectedCourse(courseName.course);
-    setNewColor(courseName.course);
+    setNewColor(currentCourses[courseName.course]);
     setModalVisible(true);
   };
 

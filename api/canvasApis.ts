@@ -3,7 +3,7 @@ import { Assignment } from "@/api/interfaces";
 
 const accessToken = CANVAS_KEY;
 // const baseUrl = "http://192.168.1.10:3000/";
-const baseUrl = "http://10.168.27.22:3000/";
+const baseUrl = "http://10.168.21.50:3000/";
 const coursesUrl = baseUrl + "getCourses";
 const assignmentsUrl = baseUrl + "getAssignments";
 
