@@ -7,15 +7,14 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/screens/AgendaItem.js"  ]
+    "expo-env.d.ts",
+    "app/screens/AgendaItem.js"
+  ]
 }
