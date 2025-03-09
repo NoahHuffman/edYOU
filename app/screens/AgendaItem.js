@@ -49,7 +49,7 @@ export const AgendaItem = ({
           <View
             style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
           />
-          <View style={styles.container}>
+          <View style={styles.buttonContainer}>
             {html_url && (
               <TouchableOpacity
                 style={styles.button}
@@ -72,13 +72,13 @@ export const AgendaItem = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  buttonContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   button: {
-    backgroundColor: "blue",
+    backgroundColor: "#8c8c8c",
     borderRadius: 5,
     padding: 10,
     flexDirection: "row",
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 10,
     marginRight: 5,
   },
 });
