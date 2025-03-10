@@ -9,12 +9,20 @@ import {
 } from "react-native";
 import RenderHTML from "react-native-render-html";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { LogBox } from 'react-native';
+import { LogBox } from "react-native";
 
-LogBox.ignoreLogs(['TNodeChildrenRenderer: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
-LogBox.ignoreLogs(['Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
-LogBox.ignoreLogs(['MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.']);
-LogBox.ignoreLogs(['TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
+LogBox.ignoreLogs([
+  "TNodeChildrenRenderer: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+]);
+LogBox.ignoreLogs([
+  "Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+]);
+LogBox.ignoreLogs([
+  "MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.",
+]);
+LogBox.ignoreLogs([
+  "TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+]);
 
 export const AgendaItem = ({
   assignmentName,
@@ -46,9 +54,7 @@ export const AgendaItem = ({
       </TouchableOpacity>
       {isExpanded && (
         <View>
-          <View
-            style={{ height: 1, backgroundColor: "gray", marginVertical: 5 }}
-          />
+          <View style={styles.divider} />
           <View style={styles.buttonContainer}>
             {html_url && (
               <TouchableOpacity
@@ -72,11 +78,18 @@ export const AgendaItem = ({
 };
 
 const styles = StyleSheet.create({
+  divider: {
+    height: 1,
+    backgroundColor: "gray",
+    marginVertical: 15,
+    opacity: 0.3,
+  },
   buttonContainer: {
     alignItems: "center",
+    marginBottom: 10,
   },
   button: {
-    display: 'flex',
+    display: "flex",
     flexDirection: "row",
     alignItems: "flex-end",
     backgroundColor: "#8c8c8c",
