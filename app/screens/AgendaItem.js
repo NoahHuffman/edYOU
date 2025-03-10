@@ -73,20 +73,19 @@ export const AgendaItem = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   button: {
+    display: 'flex',
+    flexDirection: "row",
+    alignItems: "flex-end",
     backgroundColor: "#8c8c8c",
     borderRadius: 5,
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
+    padding: 6,
   },
   buttonText: {
     color: "white",
-    fontSize: 10,
+    fontSize: 14,
     marginRight: 5,
   },
 });
