@@ -26,7 +26,7 @@ const HomeScreen: React.FC<{
   setColorChanged: (changed: boolean) => void;
 }> = ({ currentCourses, setCurrentCourses, colorChanged, setColorChanged }) => {
   const [items, setItems] = useState<Items>({});
-  const [modalVisible, setModalVisible] = useState(false);
+  const [assignmentModalVisible, setAssignmentModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
   const [dueTime, setDueTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -55,7 +55,7 @@ const HomeScreen: React.FC<{
 
       switch (index.row) {
         case 0:
-          setModalVisible(true);
+          setAssignmentModalVisible(true);
           break;
         case 1:
           const today = new Date().toISOString();
@@ -108,7 +108,7 @@ const HomeScreen: React.FC<{
       return;
     }
 
-    setModalVisible(false);
+    setAssignmentModalVisible(false);
     const formattedDate = dueDate.toISOString().split("T")[0];
     const updatedItems = { ...items };
 
@@ -131,7 +131,7 @@ const HomeScreen: React.FC<{
   };
 
   const closeModal = () => {
-    setModalVisible(false);
+    setAssignmentModalVisible(false);
   };
 
   useEffect(() => {
@@ -240,11 +240,11 @@ const HomeScreen: React.FC<{
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={assignmentModalVisible}
+        onRequestClose={() => setAssignmentModalVisible(false)}
       >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Create an assignment</Text>
+        <View style={styles.assignmentModalView}>
+          <Text style={styles.assignmentModalText}>Create an assignment</Text>
           <TextInput
             style={styles.input}
             placeholder="Course name"
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     zIndex: 1,
   },
-  modalView: {
+  assignmentModalView: {
     flex: 1,
     margin: 20,
     backgroundColor: "white",
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalText: {
+  assignmentModalText: {
     marginBottom: 20,
     color: "black",
     fontSize: 16,
