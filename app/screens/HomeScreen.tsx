@@ -49,9 +49,12 @@ const HomeScreen: React.FC<{
   const [menuVisible, setMenuVisible] = React.useState(false);
 
   const onItemSelect = (index: any): void => {
-    setSelectedIndex(index);
-    setMenuVisible(false);
+    setTimeout(() => {
+      setSelectedIndex(index);
+      setMenuVisible(false);
+    }, 0);
   };
+  
 
   const renderToggleButton = (): React.ReactElement => (
     <TouchableOpacity
