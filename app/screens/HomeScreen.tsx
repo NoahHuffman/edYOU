@@ -55,12 +55,12 @@ const HomeScreen: React.FC<{
 
       switch (index.row) {
         case 0:
+          setModalVisible(true);
+          break;
+        case 1:
           const today = new Date().toISOString();
           setSelectedDay(today);
           agendaRef.current.current?.scrollToDay(today);
-          break;
-        case 1:
-          setModalVisible(true);
           break;
         default:
           break;
@@ -232,8 +232,8 @@ const HomeScreen: React.FC<{
           placement={"top"}
           onBackdropPress={() => setMenuVisible(false)}
         >
-          <MenuItem title="Today" />
           <MenuItem title="Add assignment" />
+          <MenuItem title="Jump to today" />
         </OverflowMenu>
       </Layout>
 
