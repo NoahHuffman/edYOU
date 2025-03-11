@@ -246,14 +246,14 @@ const HomeScreen: React.FC<{
         <View style={styles.assignmentModalView}>
           <Text style={styles.assignmentModalText}>Create an assignment</Text>
           <TextInput
-            style={styles.input}
+            style={styles.assignmentModalInput}
             placeholder="Course name"
             placeholderTextColor="grey"
             onChangeText={onChangeClassName}
             value={classNameInput}
           />
           <TextInput
-            style={styles.input}
+            style={styles.assignmentModalInput}
             placeholder="Assignment name"
             placeholderTextColor="grey"
             onChangeText={onChangeAssignmentName}
@@ -261,7 +261,7 @@ const HomeScreen: React.FC<{
           />
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
             <TextInput
-              style={styles.input}
+              style={styles.assignmentModalInput}
               placeholder="Due date"
               value={dueDate.toLocaleDateString()}
               editable={false}
@@ -269,7 +269,7 @@ const HomeScreen: React.FC<{
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setShowTimePicker(true)}>
             <TextInput
-              style={styles.input}
+              style={styles.assignmentModalInput}
               placeholder="Time"
               value={dueTime.toLocaleTimeString([], {
                 hour: "2-digit",
@@ -278,20 +278,15 @@ const HomeScreen: React.FC<{
               editable={false}
             />
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
+          <View style={styles.assignmentModalButtons}>
             <TouchableOpacity
-              style={styles.closeButton}
+              style={styles.cancelButton}
               onPress={() => closeModal()}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.addAssignmentButton}
+              style={styles.addButton}
               onPress={() =>
                 addNewAssignment(
                   classNameInput,
@@ -301,7 +296,7 @@ const HomeScreen: React.FC<{
                 )
               }
             >
-              <Text style={styles.addAssignmentButtonText}>Add Assignment</Text>
+              <Text style={styles.addButtonText}>Add Assignment</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -355,46 +350,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 1,
   },
-  addButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 200,
-    backgroundColor: PrimaryColors.lightBlue.background,
-    borderRadius: 25,
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    zIndex: 1,
-  },
-  todayButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    backgroundColor: PrimaryColors.lightBlue.background,
-    borderRadius: 25,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    zIndex: 1,
-  },
   assignmentModalView: {
+    display: "flex",
+    justifyContent: "center",
     flex: 1,
     margin: 20,
     backgroundColor: "white",
@@ -416,27 +374,35 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  addAssignmentButton: {
-    backgroundColor: "green",
+  assignmentModalButtons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+    marginTop: 10,
+  },
+  addButton: {
+    backgroundColor: "rgba(57, 155, 104, 0.8)",
     padding: 10,
     borderRadius: 5,
   },
-  addAssignmentButtonText: {
-    color: "white",
-  },
-  closeButton: {
-    backgroundColor: "red",
+  cancelButton: {
+    backgroundColor: "rgba(197, 197, 197, 0.5)",
     padding: 10,
     borderRadius: 5,
   },
-  closeButtonText: {
+  addButtonText: {
     color: "white",
   },
-  input: {
+  cancelButtonText: {
+    color: "black",
+  },
+  assignmentModalInput: {
+    textAlign: "center",
     height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+    borderWidth: 0.1,
+    borderRadius: 12,
+    marginVertical: 5,
   },
   loadingContainer: {
     flex: 1,
