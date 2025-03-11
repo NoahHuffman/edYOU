@@ -12,10 +12,12 @@ import { Agenda } from "react-native-calendars";
 import { Assignment, Items } from "@/api/interfaces";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
-import Icon from "react-native-vector-icons/AntDesign";
+import AntIcon from "react-native-vector-icons/AntDesign";
+import FeatherIcon from "react-native-vector-icons/Feather";
 import { PrimaryColors } from "../constants/Colors";
 import { loadAssignments, loadCourses } from "../services/app.service";
 import { useFocusEffect } from "expo-router";
+import { Layout, MenuItem, OverflowMenu } from "@ui-kitten/components";
 
 const HomeScreen: React.FC<{
   currentCourses: { [key: string]: string };
@@ -42,6 +44,22 @@ const HomeScreen: React.FC<{
   const agendaRef = useRef<any>(null);
   const [selectedDay, setSelectedDay] = useState(
     currentDate.toISOString().split("T")[0]
+  );
+  const [selectedIndex, setSelectedIndex] = React.useState(null);
+  const [menuVisible, setMenuVisible] = React.useState(false);
+
+  const onItemSelect = (index: any): void => {
+    setSelectedIndex(index);
+    setMenuVisible(false);
+  };
+
+  const renderToggleButton = (): React.ReactElement => (
+    <TouchableOpacity
+      style={styles.moreButton}
+      onPress={() => setMenuVisible(true)}
+    >
+      <FeatherIcon name="more-vertical" size={24} color="white" />
+    </TouchableOpacity>
   );
 
   const customTheme = {
@@ -182,7 +200,7 @@ const HomeScreen: React.FC<{
   });
 
   return (
-    <View style={{ flex: 1, marginHorizontal: 10 }}>
+    <View style={{ flex: 1, marginHorizontal: 10, position: "relative" }}>
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="blue" />
@@ -193,7 +211,7 @@ const HomeScreen: React.FC<{
         style={styles.addButton}
         onPress={() => setModalVisible(true)}
       >
-        <Icon name="plus" size={24} color="white" />
+        <AntIcon name="plus" size={24} color="white" />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.todayButton}
@@ -205,6 +223,20 @@ const HomeScreen: React.FC<{
       >
         <Text>Today</Text>
       </TouchableOpacity>
+
+      <Layout level="1">
+        <OverflowMenu
+          appearance="noDivider"
+          anchor={renderToggleButton}
+          visible={menuVisible}
+          selectedIndex={selectedIndex!}
+          onSelect={onItemSelect}
+          onBackdropPress={() => setMenuVisible(false)}
+        >
+          <MenuItem title="Today" />
+          <MenuItem title="Add assignment" />
+        </OverflowMenu>
+      </Layout>
 
       <Modal
         animationType="slide"
@@ -311,10 +343,22 @@ const HomeScreen: React.FC<{
 };
 
 const styles = StyleSheet.create({
+  moreButton: {
+    position: "absolute",
+    // bottom: 0,
+    right: 0,
+    backgroundColor: PrimaryColors.lightBlue.background,
+    borderRadius: 25,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+  },
   addButton: {
     position: "absolute",
     bottom: 20,
-    right: 20,
+    right: 200,
     backgroundColor: PrimaryColors.lightBlue.background,
     borderRadius: 25,
     width: 50,

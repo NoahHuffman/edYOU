@@ -5,6 +5,8 @@ import HomeScreen from "./screens/HomeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import { useState } from "react";
 import { StatusBar } from "react-native";
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider } from '@ui-kitten/components';
 
 const homeName = "Home";
 const settingsName = "Settings";
@@ -18,7 +20,7 @@ function MainContainer() {
   const [colorChanged, setColorChanged] = useState(false);
 
   return (
-    <>
+    <ApplicationProvider {...eva} theme={eva.light}>
       <StatusBar barStyle="dark-content" />
       <Tab.Navigator
         initialRouteName={homeName}
@@ -66,7 +68,7 @@ function MainContainer() {
           options={{ tabBarLabel: "" }}
         />
       </Tab.Navigator>
-    </>
+      </ApplicationProvider>
   );
 }
 
