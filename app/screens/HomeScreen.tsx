@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useRef } from "react";
 import {
   View,
   Text,
@@ -39,6 +39,10 @@ const HomeScreen: React.FC<{
     [key: string]: string;
   }>({});
   const currentDate = new Date();
+  const agendaRef = useRef<any>(null);
+  const [selectedDay, setSelectedDay] = useState(
+    currentDate.toISOString().split("T")[0]
+  );
 
   const customTheme = {
     agendaDayTextColor: "#B0B0B0",
@@ -131,7 +135,10 @@ const HomeScreen: React.FC<{
         const loadData = async () => {
           setLoading(true);
           try {
-            const newItems = await loadAssignments(courses, currentDate.toISOString());
+            const newItems = await loadAssignments(
+              courses,
+              currentDate.toISOString()
+            );
             setItems(newItems);
           } catch (error: any) {
             console.error(error.message);
@@ -187,6 +194,16 @@ const HomeScreen: React.FC<{
         onPress={() => setModalVisible(true)}
       >
         <Icon name="plus" size={24} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.todayButton}
+        onPress={() => {
+          const today = new Date().toISOString();
+          setSelectedDay(today);
+          agendaRef.current.current?.scrollToDay(today);
+        }}
+      >
+        <Text>Today</Text>
       </TouchableOpacity>
 
       <Modal
@@ -278,9 +295,12 @@ const HomeScreen: React.FC<{
       )}
 
       <Agenda
+        ref={agendaRef}
         items={items}
         showOnlySelectedDayItems={true}
         theme={customTheme}
+        current={selectedDay}
+        key={selectedDay}
         renderItem={(item: Assignment & { className: string }) => (
           <RenderAgendaItem item={item} />
         )}
@@ -299,6 +319,25 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: 50,
     height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    zIndex: 1,
+  },
+  todayButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    backgroundColor: PrimaryColors.lightBlue.background,
+    borderRadius: 25,
+    padding: 10,
     justifyContent: "center",
     alignItems: "center",
     elevation: 5,
