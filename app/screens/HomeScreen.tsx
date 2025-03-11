@@ -50,7 +50,7 @@ const HomeScreen: React.FC<{
 
   const onItemSelect = (index: any): void => {
     setTimeout(() => {
-      setSelectedIndex(index);
+      setSelectedIndex(null);
       setMenuVisible(false);
 
       switch (index.row) {
