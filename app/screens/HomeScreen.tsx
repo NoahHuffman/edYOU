@@ -234,6 +234,7 @@ const HomeScreen: React.FC<{
           visible={menuVisible}
           selectedIndex={selectedIndex!}
           onSelect={onItemSelect}
+          placement={'top'}
           onBackdropPress={() => setMenuVisible(false)}
         >
           <MenuItem title="Today" />
@@ -349,6 +350,7 @@ const styles = StyleSheet.create({
   moreButton: {
     position: "absolute",
     // bottom: 0,
+    top: 745,
     right: 0,
     backgroundColor: PrimaryColors.lightBlue.background,
     borderRadius: 25,
