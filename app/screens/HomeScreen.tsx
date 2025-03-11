@@ -52,9 +52,21 @@ const HomeScreen: React.FC<{
     setTimeout(() => {
       setSelectedIndex(index);
       setMenuVisible(false);
+
+      switch (index.row) {
+        case 0:
+          const today = new Date().toISOString();
+          setSelectedDay(today);
+          agendaRef.current.current?.scrollToDay(today);
+          break;
+        case 1:
+          setModalVisible(true);
+          break;
+        default:
+          break;
+      }
     }, 0);
   };
-  
 
   const renderToggleButton = (): React.ReactElement => (
     <TouchableOpacity
@@ -210,23 +222,6 @@ const HomeScreen: React.FC<{
         </View>
       )}
 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => setModalVisible(true)}
-      >
-        <AntIcon name="plus" size={24} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.todayButton}
-        onPress={() => {
-          const today = new Date().toISOString();
-          setSelectedDay(today);
-          agendaRef.current.current?.scrollToDay(today);
-        }}
-      >
-        <Text>Today</Text>
-      </TouchableOpacity>
-
       <Layout level="1">
         <OverflowMenu
           appearance="noDivider"
@@ -234,7 +229,7 @@ const HomeScreen: React.FC<{
           visible={menuVisible}
           selectedIndex={selectedIndex!}
           onSelect={onItemSelect}
-          placement={'top'}
+          placement={"top"}
           onBackdropPress={() => setMenuVisible(false)}
         >
           <MenuItem title="Today" />
