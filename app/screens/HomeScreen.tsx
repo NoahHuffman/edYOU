@@ -239,7 +239,7 @@ const HomeScreen: React.FC<{
       </Layout>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={assignmentModalVisible}
         onRequestClose={() => setAssignmentModalVisible(false)}
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   },
   assignmentModalView: {
     width: "70%",
-    top: '20%',
+    top: '25%',
     alignSelf: 'center',
     backgroundColor: "white",
     borderRadius: 20,
