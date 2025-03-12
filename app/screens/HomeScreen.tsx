@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, Items } from "@/api/interfaces";
@@ -244,61 +245,63 @@ const HomeScreen: React.FC<{
         onRequestClose={() => setAssignmentModalVisible(false)}
       >
         <View style={styles.assignmentModalView}>
-          <Text style={styles.assignmentModalText}>Create an assignment</Text>
-          <TextInput
-            style={styles.assignmentModalInput}
-            placeholder="Course name"
-            placeholderTextColor="grey"
-            onChangeText={onChangeClassName}
-            value={classNameInput}
-          />
-          <TextInput
-            style={styles.assignmentModalInput}
-            placeholder="Assignment name"
-            placeholderTextColor="grey"
-            onChangeText={onChangeAssignmentName}
-            value={assignmentNameInput}
-          />
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <ScrollView>
+            <Text style={styles.assignmentModalText}>Create an assignment</Text>
             <TextInput
               style={styles.assignmentModalInput}
-              placeholder="Due date"
-              value={dueDate.toLocaleDateString()}
-              editable={false}
+              placeholder="Course name"
+              placeholderTextColor="grey"
+              onChangeText={onChangeClassName}
+              value={classNameInput}
             />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowTimePicker(true)}>
             <TextInput
               style={styles.assignmentModalInput}
-              placeholder="Time"
-              value={dueTime.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              editable={false}
+              placeholder="Assignment name"
+              placeholderTextColor="grey"
+              onChangeText={onChangeAssignmentName}
+              value={assignmentNameInput}
             />
-          </TouchableOpacity>
-          <View style={styles.assignmentModalButtons}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => closeModal()}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+              <TextInput
+                style={styles.assignmentModalInput}
+                placeholder="Due date"
+                value={dueDate.toLocaleDateString()}
+                editable={false}
+              />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() =>
-                addNewAssignment(
-                  classNameInput,
-                  assignmentNameInput,
-                  "Assignment Description",
-                  dueTime
-                )
-              }
-            >
-              <Text style={styles.addButtonText}>Add Assignment</Text>
+            <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+              <TextInput
+                style={styles.assignmentModalInput}
+                placeholder="Time"
+                value={dueTime.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                editable={false}
+              />
             </TouchableOpacity>
-          </View>
+            <View style={styles.assignmentModalButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => closeModal()}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() =>
+                  addNewAssignment(
+                    classNameInput,
+                    assignmentNameInput,
+                    "Assignment Description",
+                    dueTime
+                  )
+                }
+              >
+                <Text style={styles.addButtonText}>Add Assignment</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       </Modal>
 
@@ -351,10 +354,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   assignmentModalView: {
-    display: "flex",
-    justifyContent: "center",
-    flex: 1,
-    margin: 20,
+    width: "70%",
+    top: '20%',
+    alignSelf: 'center',
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
