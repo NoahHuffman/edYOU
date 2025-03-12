@@ -39,8 +39,6 @@ function MainContainer() {
           },
           tabBarActiveTintColor: "tomato",
           tabBarInactiveTintColor: "grey",
-          tabBarLabelStyle: { paddingBottom: 10, fontSize: 10 },
-          tabBarStyle: { padding: 10, height: 70 },
           headerShown: false,
         })}
       >
