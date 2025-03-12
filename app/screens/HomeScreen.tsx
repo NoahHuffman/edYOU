@@ -13,7 +13,6 @@ import { Agenda } from "react-native-calendars";
 import { Assignment, Items } from "@/api/interfaces";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AgendaItem } from "./AgendaItem";
-import AntIcon from "react-native-vector-icons/AntDesign";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { PrimaryColors } from "../constants/Colors";
 import { loadAssignments, loadCourses } from "../services/app.service";
@@ -48,6 +47,7 @@ const HomeScreen: React.FC<{
   );
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const [showSelectedDay, setShowSelectedDay] = React.useState(true);
 
   const onItemSelect = (index: any): void => {
     setTimeout(() => {
@@ -56,9 +56,12 @@ const HomeScreen: React.FC<{
 
       switch (index.row) {
         case 0:
-          setAssignmentModalVisible(true);
+          setShowSelectedDay(prev => !prev);
           break;
         case 1:
+          setAssignmentModalVisible(true);
+          break;
+        case 2:
           const today = new Date().toISOString();
           setSelectedDay(today);
           agendaRef.current.current?.scrollToDay(today);
@@ -233,6 +236,7 @@ const HomeScreen: React.FC<{
           placement={"top"}
           onBackdropPress={() => setMenuVisible(false)}
         >
+          <MenuItem title="Change view" />
           <MenuItem title="Add assignment" />
           <MenuItem title="Jump to today" />
         </OverflowMenu>
@@ -326,7 +330,7 @@ const HomeScreen: React.FC<{
       <Agenda
         ref={agendaRef}
         items={items}
-        showOnlySelectedDayItems={true}
+        showOnlySelectedDayItems={showSelectedDay}
         theme={customTheme}
         current={selectedDay}
         key={selectedDay}
@@ -355,8 +359,8 @@ const styles = StyleSheet.create({
   },
   assignmentModalView: {
     width: "70%",
-    top: '25%',
-    alignSelf: 'center',
+    top: "25%",
+    alignSelf: "center",
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
