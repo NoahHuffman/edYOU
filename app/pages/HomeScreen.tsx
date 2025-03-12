@@ -232,7 +232,6 @@ const HomeScreen: React.FC<{
           appearance="noDivider"
           anchor={renderToggleButton}
           visible={menuVisible}
-          selectedIndex={selectedIndex!}
           onSelect={onItemSelect}
           placement={"top"}
           onBackdropPress={() => setMenuVisible(false)}
