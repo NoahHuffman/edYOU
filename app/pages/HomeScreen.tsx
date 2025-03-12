@@ -8,6 +8,7 @@ import {
   TextInput,
   ActivityIndicator,
   ScrollView,
+  InteractionManager,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { Assignment, Items } from "@/app/constants/interfaces";
@@ -50,7 +51,7 @@ const HomeScreen: React.FC<{
   const [showSelectedDay, setShowSelectedDay] = React.useState(true);
 
   const onItemSelect = (index: any): void => {
-    setTimeout(() => {
+    InteractionManager.runAfterInteractions(() => {
       setSelectedIndex(null);
       setMenuVisible(false);
 
@@ -69,7 +70,7 @@ const HomeScreen: React.FC<{
         default:
           break;
       }
-    }, 0);
+    });
   };
 
   const renderToggleButton = (): React.ReactElement => (
