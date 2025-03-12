@@ -10,11 +10,11 @@ import {
   ScrollView,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
-import { Assignment, Items } from "@/api/interfaces";
+import { Assignment, Items } from "@/app/constants/interfaces";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AgendaItem } from "./AgendaItem";
+import { AgendaItem } from "../components/AgendaItem";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { PrimaryColors } from "../constants/Colors";
+import { PrimaryColors } from "../constants/colors";
 import { loadAssignments, loadCourses } from "../services/app.service";
 import { useFocusEffect } from "expo-router";
 import { Layout, MenuItem, OverflowMenu } from "@ui-kitten/components";
@@ -56,7 +56,7 @@ const HomeScreen: React.FC<{
 
       switch (index.row) {
         case 0:
-          setShowSelectedDay(prev => !prev);
+          setShowSelectedDay((prev) => !prev);
           break;
         case 1:
           setAssignmentModalVisible(true);

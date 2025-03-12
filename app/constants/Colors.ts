@@ -1,14 +1,14 @@
 export const PrimaryColors = {
   salmon: {
-    background: '#ffb6b9',
+    background: "#ffb6b9",
   },
   tan: {
-    background: '#fae3d9',
+    background: "#fae3d9",
   },
   lightBlue: {
-    background: '#bbded6',
+    background: "#bbded6",
   },
   green: {
-    background: '#61c0bf',
+    background: "#61c0bf",
   },
 };

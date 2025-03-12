@@ -14,7 +14,12 @@ export interface Course {
 }
 
 export interface CourseAssignment {
-  [courseName: string]: { name: string; description: string; dueDate: string, html_url?: string }[];
+  [courseName: string]: {
+    name: string;
+    description: string;
+    dueDate: string;
+    html_url?: string;
+  }[];
 }
 
 export interface Items {

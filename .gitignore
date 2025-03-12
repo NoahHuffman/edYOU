@@ -33,7 +33,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-app-example
-api/constants.ts
+# other
+app/constants/consts.ts
 
 

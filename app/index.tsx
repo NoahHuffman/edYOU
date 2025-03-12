@@ -1,12 +1,12 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import HomeScreen from "./screens/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
+import HomeScreen from "./pages/HomeScreen";
+import SettingsScreen from "./pages/SettingsScreen";
 import { useState } from "react";
 import { StatusBar } from "react-native";
-import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider } from "@ui-kitten/components";
 
 const homeName = "Home";
 const settingsName = "Settings";
@@ -66,7 +66,7 @@ function MainContainer() {
           options={{ tabBarLabel: "" }}
         />
       </Tab.Navigator>
-      </ApplicationProvider>
+    </ApplicationProvider>
   );
 }
 

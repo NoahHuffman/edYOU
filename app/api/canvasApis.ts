@@ -1,5 +1,5 @@
-import { CANVAS_KEY, USER_ID } from "@/api/constants";
-import { Assignment } from "@/api/interfaces";
+import { CANVAS_KEY, USER_ID } from "@/app/constants/consts";
+import { Assignment } from "@/app/constants/interfaces";
 
 const accessToken = CANVAS_KEY;
 // const baseUrl = "http://192.168.1.10:3000/";
@@ -19,8 +19,10 @@ export const fetchCourses = async () => {
 
     const data = await response.json();
 
-    const activeCourses = data.filter((course: any) => 
-      course.enrollments.some((enrollment: any) => enrollment.enrollment_state === 'active')
+    const activeCourses = data.filter((course: any) =>
+      course.enrollments.some(
+        (enrollment: any) => enrollment.enrollment_state === "active"
+      )
     );
 
     return activeCourses;

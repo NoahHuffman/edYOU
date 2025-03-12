@@ -1,6 +1,6 @@
-import { fetchCourses, fetchAssignments } from "@/api/canvasApis";
-import { Assignment, CourseAssignment, Items } from "@/api/interfaces";
-import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/api/constants";
+import { fetchCourses, fetchAssignments } from "@/app/api/canvasApis";
+import { Assignment, CourseAssignment, Items } from "@/app/constants/interfaces";
+import { UTC_COURSE_CODE_LENGTH, getClassName } from "@/app/constants/consts";
 
 export const loadCourses = async () => {
   const courses: { [key: string]: string } = {};
